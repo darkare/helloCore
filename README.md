@@ -1,1 +1,3 @@
-"# helloCore" 
+"# helloCore"
+
+Hello World Readme 
