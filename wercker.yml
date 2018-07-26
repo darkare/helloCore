@@ -10,11 +10,11 @@ build:
         name: build
         code: |
           dotnet build
-    -script: 
+    - script: 
         name: publish
         code: |
           dotnet publish -o -publish
-    -script:
+    - script:
         name: copy binary
         code: |
           cp -r . $WERCKER_OUTPUT_DIR/app
@@ -24,6 +24,6 @@ deploy:
     - internal/docker-push:
         username: $USERNAME
         password: $PASSWORD
-        repository: dotnetcoreserices/hellow-world
+        repository: dotnetcoreservices/hello-world
         registry: https://registry.hub.docker.com
         entrypoint: "/pipeline/source/app/docker_entrypoint.sh"
