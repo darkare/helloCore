@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - uat
+  pull_request:
+    branches:
+      - uat
     # Only run if the push is a merge commit
     # GitHub Actions does not have a direct 'merge' event, so we check for merge commit in the job
 
