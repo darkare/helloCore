@@ -1,0 +1,25 @@
+name: Deploy Cloudflare (PROD, pnpm)
+
+on:
+  # ✅ Dry run for PRs targeting uat
+  pull_request:
+    branches: [ "prod" ]
+  # ✅ Real deploy after merge/push to uat
+  push:
+    branches: [ "prod" ]   # keep your feature branch for testing
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: workers-prod-mamamia-com-au
+    env:
+      NODE_VERSION: '20.x'
+
+    steps:
+      - name: echo
+        run: echo "Hello World PROD"
