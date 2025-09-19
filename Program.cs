@@ -7,7 +7,8 @@ namespace console1
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World One!");
-            Console.WriteLine("Hello World Two!");
+            Console.WriteLine("Hello World Two Two!");
+            Console.WriteLine("Hello World Three 3!");
         }
     }
 }
