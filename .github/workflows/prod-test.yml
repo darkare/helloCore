@@ -13,10 +13,10 @@ permissions:
   contents: read
 
 jobs:
-  deploy-uat:
+  deploy-prod:
     runs-on: ubuntu-latest
     concurrency:
-      group: workers-uat-mamamia-com-au
+      group: workers-prod-mamamia-com-au
     env:
       NODE_VERSION: '20.x'
 
