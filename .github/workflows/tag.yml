@@ -45,3 +45,32 @@ jobs:
             echo "🚀 Deploying to PRODUCTION..."
             # your PROD deploy logic here
           fi
+          
+      - name: Update GitHub Release notes with deployment info
+        if: ${{ github.event.inputs.environment == 'prod' || github.event.inputs.environment == 'uat' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=${{ github.event.inputs.tag }}
+          ENV=${{ github.event.inputs.environment }}
+          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+      
+          # get the existing release JSON
+          release=$(gh api repos/${{ github.repository }}/releases/tags/$TAG)
+      
+          # extract the release id
+          release_id=$(echo "$release" | jq -r .id)
+      
+          # existing body
+          current_body=$(echo "$release" | jq -r .body)
+      
+          # append a note
+          new_body="${current_body}\n\n✅ **Deployed to ${ENV^^}** on ${NOW}"
+      
+          # patch the release
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/releases/$release_id \
+            -f body="$new_body"
+      
