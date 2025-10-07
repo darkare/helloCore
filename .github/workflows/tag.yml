@@ -1,0 +1,38 @@
+name: Manual Deploy by Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Select the target environment"
+        required: true
+        type: choice
+        options:
+          - uat
+          - prod
+      tag:
+        description: "Git tag to deploy (e.g. v1.0.3)"
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # dynamically assign the job environment to the selected input
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout code for the given tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag }}
+
+      - name: Display deployment context
+        run: |
+          echo "Selected environment: ${{ github.event.inputs.environment }}"
+          echo "Tag to deploy: ${{ github.event.inputs.tag }}"
+
+      # Retrieve ENV_NAME variable configured in GitHub Environment
+      - name: Show environment variable from GitHub Environment
+        run: |
+          echo "ENV_NAME from ${{ github.event.inputs.environment }} environment is: ${{ vars.ENV_NAME }}"
