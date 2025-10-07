@@ -53,24 +53,37 @@ jobs:
         run: |
           TAG=${{ github.event.inputs.tag }}
           ENV=${{ github.event.inputs.environment }}
-          NOW=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          NOW=$(date -u +"%Y-%m-%d %H:%M:%SZ")
       
-          # get the existing release JSON
-          release=$(gh api repos/${{ github.repository }}/releases/tags/$TAG)
+          # ensure gh and jq are installed
+          sudo apt-get update -qq
+          sudo apt-get install -y jq gh > /dev/null
       
-          # extract the release id
-          release_id=$(echo "$release" | jq -r .id)
+          # get the release details
+          release_json=$(gh api repos/${{ github.repository }}/releases/tags/$TAG)
+          release_id=$(echo "$release_json" | jq -r .id)
+          current_body=$(echo "$release_json" | jq -r .body)
       
-          # existing body
-          current_body=$(echo "$release" | jq -r .body)
+          # create a nicely formatted entry
+          new_entry=$(cat <<EOF
       
-          # append a note
-          new_body="${current_body}\n\n✅ **Deployed to ${ENV^^}** on ${NOW}"
+          ### 🟢 Deployment Record
+          - **Environment:** ${ENV^^}
+          - **Date:** ${NOW}
+          - **Triggered by:** $GITHUB_ACTOR
+          - **Workflow Run:** [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          
+          EOF
+          )
+          
+          # combine and update release body
+          updated_body="${current_body}${new_entry}"
       
-          # patch the release
           gh api \
             --method PATCH \
             -H "Accept: application/vnd.github+json" \
             /repos/${{ github.repository }}/releases/$release_id \
-            -f body="$new_body"
+            -f body="$updated_body"
       
+          echo "✅ Release $TAG updated with ${ENV^^} deployment record"
+            
