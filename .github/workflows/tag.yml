@@ -45,8 +45,8 @@ jobs:
             echo "🚀 Deploying to PRODUCTION..."
             # your PROD deploy logic here
           fi
-
-      - name: Update GitHub Release notes with deployment info (including approval notes)
+          
+      - name: Update GitHub Release notes with deployment info
         if: ${{ github.event.inputs.environment == 'prod' || github.event.inputs.environment == 'uat' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -55,47 +55,28 @@ jobs:
           ENV=${{ github.event.inputs.environment }}
           NOW=$(date -u +"%Y-%m-%d %H:%M:%SZ")
       
+          # ensure gh and jq are installed
           sudo apt-get update -qq
           sudo apt-get install -y jq gh > /dev/null
       
-          # Get the release info
+          # get the release details
           release_json=$(gh api repos/${{ github.repository }}/releases/tags/$TAG)
           release_id=$(echo "$release_json" | jq -r .id)
           current_body=$(echo "$release_json" | jq -r .body)
       
-          # Default values in case no approval notes exist
-          reviewer_name="N/A"
-          review_comment="N/A"
-      
-          if [ "$ENV" = "prod" ]; then
-            echo "🔍 Checking for production environment approval notes..."
-      
-            # Find the latest deployment that targets 'prod'
-            deployment_id=$(gh api repos/${{ github.repository }}/deployments \
-              --jq '.[] | select(.environment == "prod") | .id' | head -n 1)
-      
-            if [ -n "$deployment_id" ]; then
-              # Fetch the latest review for this deployment
-              review_data=$(gh api repos/${{ github.repository }}/deployments/$deployment_id/reviews --jq '.[-1]')
-              if [ -n "$review_data" ]; then
-                reviewer_name=$(echo "$review_data" | jq -r '.user.login')
-                review_comment=$(echo "$review_data" | jq -r '.comment // "No comment provided"')
-              fi
-            fi
-          fi
-      
+          # create a nicely formatted entry
           new_entry=$(cat <<EOF
-          
+      
           ### 🟢 Deployment Record
           - **Environment:** ${ENV^^}
           - **Date:** ${NOW}
           - **Triggered by:** $GITHUB_ACTOR
-          - **Reviewer:** ${reviewer_name}
-          - **Reviewer Notes:** ${review_comment}
           - **Workflow Run:** [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          
           EOF
           )
-
+          
+          # combine and update release body
           updated_body="${current_body}${new_entry}"
       
           gh api \
@@ -104,5 +85,5 @@ jobs:
             /repos/${{ github.repository }}/releases/$release_id \
             -f body="$updated_body"
       
-          echo "✅ Release $TAG updated with deployment record for ${ENV^^}"
-      
+          echo "✅ Release $TAG updated with ${ENV^^} deployment record"
+            
