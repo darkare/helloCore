@@ -16,10 +16,11 @@ on:
         type: string
 
 jobs:
-  deploy:
+  # UAT deployment (no approval required)
+  deploy-uat:
     runs-on: ubuntu-latest
-    # dynamically assign the job environment to the selected input
-    environment: ${{ github.event.inputs.environment }}
+    if: github.event.inputs.environment == 'uat'
+    environment: uat
 
     steps:
       - name: Checkout code for the given tag
@@ -29,10 +30,75 @@ jobs:
 
       - name: Display deployment context
         run: |
-          echo "Selected environment: ${{ github.event.inputs.environment }}"
+          echo "Selected environment: uat"
           echo "Tag to deploy: ${{ github.event.inputs.tag }}"
 
       # Retrieve ENV_NAME variable configured in GitHub Environment
       - name: Show environment variable from GitHub Environment
         run: |
-          echo "ENV_NAME from ${{ github.event.inputs.environment }} environment is: ${{ vars.ENV_NAME }}"
+          echo "ENV_NAME from uat environment is: ${{ vars.ENV_NAME }}"
+
+      - name: Deploy to UAT
+        run: |
+          echo "Deploying ${{ github.event.inputs.tag }} to UAT environment..."
+          # Add your UAT deployment commands here
+
+  # Production deployment (requires approval)
+  deploy-prod:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'prod'
+    environment: 
+      name: prod
+      url: https://your-production-url.com
+    
+    steps:
+      - name: Wait for approval
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: ${{ vars.PROD_APPROVERS || github.repository_owner }}
+          minimum-approvals: 1
+          issue-title: "Production Deployment Approval Required"
+          issue-body: |
+            **Production Deployment Request**
+            
+            🚀 **Tag to deploy:** `${{ github.event.inputs.tag }}`
+            🎯 **Environment:** Production
+            👤 **Requested by:** @${{ github.actor }}
+            📅 **Requested at:** ${{ github.event.head_commit.timestamp }}
+            
+            **Please review and approve this production deployment.**
+            
+            ### Pre-deployment Checklist:
+            - [ ] Tag has been tested in UAT environment
+            - [ ] All tests are passing
+            - [ ] Documentation is updated
+            - [ ] Rollback plan is prepared
+            
+            **To approve:** Comment `approved` or `approve`
+            **To reject:** Comment `denied` or `reject`
+
+      - name: Checkout code for the given tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag }}
+
+      - name: Display deployment context
+        run: |
+          echo "Selected environment: prod"
+          echo "Tag to deploy: ${{ github.event.inputs.tag }}"
+
+      # Retrieve ENV_NAME variable configured in GitHub Environment
+      - name: Show environment variable from GitHub Environment
+        run: |
+          echo "ENV_NAME from prod environment is: ${{ vars.ENV_NAME }}"
+
+      - name: Deploy to Production
+        run: |
+          echo "Deploying ${{ github.event.inputs.tag }} to Production environment..."
+          # Add your production deployment commands here
+
+      - name: Post-deployment notification
+        run: |
+          echo "✅ Successfully deployed ${{ github.event.inputs.tag }} to Production!"
+          echo "🔗 Production URL: https://your-production-url.com"
