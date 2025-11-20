@@ -1,0 +1,166 @@
+{
+	"info": {
+		"_postman_id": "85b6ff02-f699-4ba8-9188-714bd6c4bd0c",
+		"name": "mm-page-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6645707"
+	},
+	"item": [
+		{
+			"name": "sitemap",
+			"item": [
+				{
+					"name": "1-getArticleSlugFromSiteMap",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// 1. Parse the XML response body into a JSON object.",
+									"const jsonData = xml2Json(pm.response.text());",
+									"",
+									"// 2. Access the array of URL objects.",
+									"const urls = jsonData.urlset.url;",
+									"",
+									"// 3. Map over the array to extract the URL and slug for each entry.",
+									"const sitemapData = urls.map(item => {",
+									"    // Get the full URL from the <loc> tag",
+									"    const fullUrl = item.loc;",
+									"    ",
+									"    // Use the URL constructor to easily parse the path",
+									"    const urlObject = new URL(fullUrl);",
+									"    ",
+									"    // Get the pathname (e.g., \"/annie-knight-bridesmaids/\")",
+									"    const pathname = urlObject.pathname;",
+									"    ",
+									"    // Remove the leading and trailing slashes to get the clean slug",
+									"    const slug = pathname.replace(/^\\/|\\/$/g, '');",
+									"    ",
+									"    // Return the object in the desired {url, slug} structure",
+									"    return {",
+									"        url: fullUrl,",
+									"        slug: slug",
+									"    };",
+									"});",
+									"",
+									"// 4. Store the array of objects as a JSON string in a collection variable.",
+									"pm.collectionVariables.set(\"sitemapArticles\", JSON.stringify(sitemapData));",
+									"pm.collectionVariables.set(\"articleIndex\", 0);",
+									"",
+									"console.log(\"Sitemap data has been extracted and stored in the 'sitemapArticles' collection variable.\");",
+									"console.log(\"Total articles found:\", sitemapData.length);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://cf.mamamia.com.au/news-sitemap.xml",
+							"protocol": "https",
+							"host": [
+								"cf",
+								"mamamia",
+								"com",
+								"au"
+							],
+							"path": [
+								"news-sitemap.xml"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2-articleUrl",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const articles = JSON.parse(pm.collectionVariables.get(\"sitemapArticles\"));",
+									"const index = parseInt(pm.collectionVariables.get(\"articleIndex\"));",
+									"",
+									"// Check if we are still within the bounds of the array.",
+									"if (articles && index < articles.length) {",
+									"    // Set the slug for the request that is ABOUT to run.",
+									"    const currentUrl = articles[index].url;",
+									"    pm.collectionVariables.set(\"currentArticleUrl\", currentUrl);",
+									"    console.log(`Running request for index ${index}, slug: ${currentUrl}`);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// --- Tests for the response we just received ---",
+									"// pm.response will be defined here.",
+									"pm.test(`Status code is 200 for url: ${pm.collectionVariables.get(\"currentArticleUrl\")}`, function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"// --- End of tests ---",
+									"",
+									"",
+									"// --- Logic to set up the NEXT iteration ---",
+									"const articles = JSON.parse(pm.collectionVariables.get(\"sitemapArticles\"));",
+									"let index = parseInt(pm.collectionVariables.get(\"articleIndex\"));",
+									"",
+									"// Increment the index for the next run.",
+									"index++;",
+									"",
+									"// Update the index in the collection variable.",
+									"pm.collectionVariables.set(\"articleIndex\", index);",
+									"",
+									"// Check if there are more articles to process.",
+									"if (index < articles.length) {",
+									"    // If yes, schedule this same request to run again.",
+									"    pm.execution.setNextRequest(\"2-articleUrl\"); // <-- Use the exact name of this request.",
+									"} else {",
+									"    // If no, we are done. Stop the collection run.",
+									"    console.log(\"Finished processing all articles.\");",
+									"    pm.execution.setNextRequest(null);",
+									"    ",
+									"    // Optional: Clean up the variables.",
+									"    pm.collectionVariables.unset(\"sitemapArticles\");",
+									"    pm.collectionVariables.unset(\"articleIndex\");",
+									"    pm.collectionVariables.unset(\"currentArticleUrl\");",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{currentArticleUrl}}",
+							"host": [
+								"{{currentArticleUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

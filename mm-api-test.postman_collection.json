@@ -1,0 +1,848 @@
+{
+	"info": {
+		"_postman_id": "c91bd27b-f2a8-4bec-b530-e11d3ad9f118",
+		"name": "mm-api-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6645707"
+	},
+	"item": [
+		{
+			"name": "anonymous-user",
+			"item": [
+				{
+					"name": "home-page",
+					"item": [
+						{
+							"name": "api/page/home",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(`Status code is 200 page/home`, function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "accept-language",
+										"value": "en-GB,en-US;q=0.9,en;q=0.8"
+									},
+									{
+										"key": "cache-control",
+										"value": "no-cache"
+									},
+									{
+										"key": "pragma",
+										"value": "no-cache"
+									},
+									{
+										"key": "priority",
+										"value": "u=1, i"
+									},
+									{
+										"key": "referer",
+										"value": "https://pages-mamamia-com-au-c6a.pages.dev/"
+									},
+									{
+										"key": "sec-fetch-dest",
+										"value": "empty"
+									},
+									{
+										"key": "sec-fetch-mode",
+										"value": "cors"
+									},
+									{
+										"key": "sec-fetch-site",
+										"value": "same-origin"
+									},
+									{
+										"key": "user-agent",
+										"value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+									},
+									{
+										"key": "Cookie",
+										"value": "site_version=new",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/page/home",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"page",
+										"home"
+									]
+								},
+								"description": "Generated from cURL: curl 'https://pages-mamamia-com-au-c6a.pages.dev/api/user' \\\n  -H 'accept: */*' \\\n  -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \\\n  -H 'authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjU0NTEzMjA5OWFkNmJmNjEzODJiNmI0Y2RlOWEyZGZlZDhjYjMwZjAiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGFyeWwgRm9uZyIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NMd2p4Uy1EVVdyQVBfQ0hTQ0RsQzNyYlJzOV9tMlZPM0o4cWhSdnFVNnJaNFp0V2M4PXM5Ni1jIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL21hbWFtaWEtcHdhIiwiYXVkIjoibWFtYW1pYS1wd2EiLCJhdXRoX3RpbWUiOjE3NTk0NTU5NTYsInVzZXJfaWQiOiJzSGpmTm42NHg2ZHdIM1lKSVFQdSIsInN1YiI6InNIamZObjY0eDZkd0gzWUpJUVB1IiwiaWF0IjoxNzYyMzE5NTczLCJleHAiOjE3NjIzMjMxNzMsImVtYWlsIjoiZGFyeWwuZm9uZ0BtYW1hbWlhLmNvbS5hdSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTA1MzU2MjA0MzA3NTUzMDM1Mzc4Il0sImVtYWlsIjpbImRhcnlsLmZvbmdAbWFtYW1pYS5jb20uYXUiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.h2zdmJiTmicdWbXirBrkJIUoar87eEL_feQhrdIKrRUzHWz062G0_l3drb4l7AkDxoOLNvevvEXbjdBCGVI5O8Fluh4J65btPihJsguGRcUUM4OhtOYE6FDXFdD6N7uZ-fg_jNGQg1MrqgGKylMcYRB-UNS-Nn9tXwju6zeMilbSfaItTzDKhBaOPAenY9AypOnbI44zoZXWyCJVfZyeNoZ7sN-QXmm9JZQ3sTis14xEzoyuNmVGcTJO2kxdfV8RNrLgmNpQXkySx7feiBX8puB1jxbS4-TxiC2llT7yH1gxy9hyhMZGu34-ncptKVapyWZZ-a2bjhB3UCXynQKzIQ' \\\n  -H 'cache-control: no-cache' \\\n  -b '_ga=GA1.1.763605260.1753534401; __stripe_mid=c7c2a452-d97b-43e5-a3db-44a7c9a1667023ec73; _cb=ByAYSeBIIObdDA8osI; mm_user_id=sHjfNn64x6dwH3YJIQPu; _pbjs_userid_consent_data=3524755945110770; _hjSessionUser_6561314=eyJpZCI6IjI2NGE2OWViLWJjYTYtNWNmZC04NzM2LTA5MzExMGM0ODE4ZCIsImNyZWF0ZWQiOjE3NjIzMTk1NzIxNTgsImV4aXN0aW5nIjp0cnVlfQ==; _hjSession_6561314=eyJpZCI6IjE1MjIxNTlkLWQ1ZDMtNGI5OC05NGU4LTlkNzRmNDE1OTVkOSIsImMiOjE3NjIzMTk1NzIxNTgsInMiOjEsInIiOjEsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjoxLCJzcCI6MH0=; __gads=ID=9ae2249dd02d0f6c:T=1753750548:RT=1762319876:S=ALNI_Ma7X7j4ZdD_GSZvYoH6UpGyXR23cQ; __gpi=UID=0000117088735a84:T=1753750548:RT=1762319876:S=ALNI_MZ_iDyyXRq85GJde-NRWWnKiZRHLw; _chartbeat2=.1761539648471.1762319986724.1111000101.CqPqxdCx8mqVDef3VVYtfh3wAE0M.1; _cb_svref=external; _ga_DCYKG3Q1EV=GS2.1.s1762319572$o63$g1$t1762319987$j35$l0$h0' \\\n  -H 'pragma: no-cache' \\\n  -H 'priority: u=1, i' \\\n  -H 'referer: https://pages-mamamia-com-au-c6a.pages.dev/' \\\n  -H 'sec-fetch-dest: empty' \\\n  -H 'sec-fetch-mode: cors' \\\n  -H 'sec-fetch-site: same-origin' \\\n  -H 'user-agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1'"
+							},
+							"response": []
+						},
+						{
+							"name": "api/article/most-read",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(`Status code is 200 api/article/most-read`, function () {",
+											"    pm.response.to.have.status(200);",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "accept-language",
+										"value": "en-GB,en-US;q=0.9,en;q=0.8"
+									},
+									{
+										"key": "cache-control",
+										"value": "no-cache"
+									},
+									{
+										"key": "pragma",
+										"value": "no-cache"
+									},
+									{
+										"key": "priority",
+										"value": "u=1, i"
+									},
+									{
+										"key": "referer",
+										"value": "https://pages-mamamia-com-au-c6a.pages.dev/"
+									},
+									{
+										"key": "sec-fetch-dest",
+										"value": "empty"
+									},
+									{
+										"key": "sec-fetch-mode",
+										"value": "cors"
+									},
+									{
+										"key": "sec-fetch-site",
+										"value": "same-origin"
+									},
+									{
+										"key": "user-agent",
+										"value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+									}
+								],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/article/most-read",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"article",
+										"most-read"
+									]
+								},
+								"description": "Generated from cURL: curl 'https://pages-mamamia-com-au-c6a.pages.dev/api/article/most-read' \\\n  -H 'accept: */*' \\\n  -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \\\n  -H 'cache-control: no-cache' \\\n  -b '_ga=GA1.1.763605260.1753534401; __stripe_mid=c7c2a452-d97b-43e5-a3db-44a7c9a1667023ec73; _cb=ByAYSeBIIObdDA8osI; mm_user_id=sHjfNn64x6dwH3YJIQPu; _pbjs_userid_consent_data=3524755945110770; _chartbeat2=.1761539648471.1762319571860.1111000101.CQzzxrJDgXkoGbQwCCKJcbC4Cm7C.1; _cb_svref=external; _hjSessionUser_6561314=eyJpZCI6IjI2NGE2OWViLWJjYTYtNWNmZC04NzM2LTA5MzExMGM0ODE4ZCIsImNyZWF0ZWQiOjE3NjIzMTk1NzIxNTgsImV4aXN0aW5nIjp0cnVlfQ==; _hjSession_6561314=eyJpZCI6IjE1MjIxNTlkLWQ1ZDMtNGI5OC05NGU4LTlkNzRmNDE1OTVkOSIsImMiOjE3NjIzMTk1NzIxNTgsInMiOjEsInIiOjEsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjoxLCJzcCI6MH0=; __gads=ID=9ae2249dd02d0f6c:T=1753750548:RT=1762319572:S=ALNI_Ma7X7j4ZdD_GSZvYoH6UpGyXR23cQ; __gpi=UID=0000117088735a84:T=1753750548:RT=1762319572:S=ALNI_MZ_iDyyXRq85GJde-NRWWnKiZRHLw; _chartbeat4=t=C-rFlsD04_gqRoINWj5yqCSEvim&E=3&x=0&c=0.47&y=932&w=932; _ga_DCYKG3Q1EV=GS2.1.s1762319572$o63$g0$t1762319600$j32$l0$h0' \\\n  -H 'pragma: no-cache' \\\n  -H 'priority: u=1, i' \\\n  -H 'referer: https://pages-mamamia-com-au-c6a.pages.dev/' \\\n  -H 'sec-fetch-dest: empty' \\\n  -H 'sec-fetch-mode: cors' \\\n  -H 'sec-fetch-site: same-origin' \\\n  -H 'user-agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1'"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "podcast-page",
+					"item": [
+						{
+							"name": "api/podcasts/episodes/trending",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "accept-language",
+										"value": "en-GB,en-US;q=0.9,en;q=0.8"
+									},
+									{
+										"key": "cache-control",
+										"value": "no-cache"
+									},
+									{
+										"key": "pragma",
+										"value": "no-cache"
+									},
+									{
+										"key": "priority",
+										"value": "u=1, i"
+									},
+									{
+										"key": "referer",
+										"value": "https://prod.mamamia.com.au/podcasts/"
+									},
+									{
+										"key": "sec-fetch-dest",
+										"value": "empty"
+									},
+									{
+										"key": "sec-fetch-mode",
+										"value": "cors"
+									},
+									{
+										"key": "sec-fetch-site",
+										"value": "same-origin"
+									},
+									{
+										"key": "user-agent",
+										"value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+									}
+								],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/podcasts/episodes/trending",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"podcasts",
+										"episodes",
+										"trending"
+									]
+								},
+								"description": "Generated from cURL: curl 'https://prod.mamamia.com.au/api/podcasts/episodes/trending' \\\n  -H 'accept: */*' \\\n  -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \\\n  -H 'cache-control: no-cache' \\\n  -b '_cb=lL_bD11CvVDupwLA; _fbp=fb.2.1755736902772.381222559931735218; __stripe_mid=b53282f5-fada-4afc-868d-db3549c9c449bc37f8; _lr_env_src_ats=false; _ga=GA1.1.13848338.1755736901; _hjSessionUser_6561314=eyJpZCI6ImI2N2RiOTAxLTk2YjAtNTRhMi1hZjJjLThkNDMwOTAxMzZkZCIsImNyZWF0ZWQiOjE3NjIzODY5Nzg0NTIsImV4aXN0aW5nIjp0cnVlfQ==; FCCDCF=%5Bnull%2Cnull%2Cnull%2Cnull%2Cnull%2Cnull%2C%5B%5B32%2C%22%5B%5C%227bafa399-61ca-4671-aee1-31ec2048bf04%5C%22%2C%5B1761604392%2C585000000%5D%5D%22%5D%5D%5D; FCNEC=%5B%5B%22AKsRol84H7o3ve2w3im0HGUrMaB8KwPJogjjLICjXCidLgtaaFzsEKtiIeoyOJQ2kDLWpriqoRHylzToYB2RhCmJFVKqI_7bpD4JNlIylWsvWJ8Xo5YbhU8FWHYlDNVSBEn5d8_QXzWoOLgaRkkC5dftq1VVq-yZGg%3D%3D%22%5D%5D; _pbjs_userid_consent_data=3524755945110770; site_version=new; _ga_DCYKG3Q1EV=GS2.1.s1762484917$o76$g0$t1762484917$j60$l0$h0; _chartbeat2=.1755736901347.1762484917017.0000110110010011.CSAIyIBTCyhuDtSZnGV7HSPD6TsOK.1; _cb_svref=https%3A%2F%2Fprod.mamamia.com.au%2Fbrain-aneurysm-coma%2F; __gads=ID=bbca483767329370:T=1756343378:RT=1762484917:S=ALNI_MZMRLM5O8Q3vVFud3RnUO9XUBcdaA; __gpi=UID=000011874f265f23:T=1756343378:RT=1762484917:S=ALNI_Mb7xKAfs6OqufMqrAxGdsOJvnMavg; __eoi=ID=eb25bdc16647fba7:T=1756343378:RT=1762484917:S=AA-AfjYKqxSEKmZUleeU-eLL5KnL; _chartbeat5=86|867|%2F|https%3A%2F%2Fprod.mamamia.com.au%2Fpodcasts|Ca45YKCt_9dwBxB5elB3mt1SDb4cor||c|Ca45YKCt_9dwBxB5elB3mt1SDb4cor|mamamia.com.au||' \\\n  -H 'pragma: no-cache' \\\n  -H 'priority: u=1, i' \\\n  -H 'referer: https://prod.mamamia.com.au/podcasts/' \\\n  -H 'sec-fetch-dest: empty' \\\n  -H 'sec-fetch-mode: cors' \\\n  -H 'sec-fetch-site: same-origin' \\\n  -H 'user-agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1'"
+							},
+							"response": []
+						},
+						{
+							"name": "/api/page/podcasts",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Parse JSON response",
+											"let response = pm.response.json();",
+											"",
+											"// Filter to only EpisodeFocusedCarousel blocks",
+											"let carousels = response.data.blocks.filter(",
+											"  b => b.type === \"EpisodeFocusedCarousel\"",
+											");",
+											"",
+											"// Collect all show slugs",
+											"let slugs = [];",
+											"carousels.forEach(block => {",
+											"  block.data.items.forEach(item => {",
+											"    if (item.show && item.show.slug && !item.show.paid) {",
+											"      slugs.push(item.show.slug);",
+											"    }",
+											"  });",
+											"});",
+											"",
+											"if (slugs.length === 0) {",
+											"  console.warn(\"⚠️ No slugs found\");",
+											"  return;",
+											"}",
+											"",
+											"// Pick one random slug",
+											"let randomSlug = slugs[Math.floor(Math.random() * slugs.length)];",
+											"",
+											"// Save the random slug to environment variable",
+											"pm.environment.set(\"show_slug\", randomSlug);",
+											"",
+											"console.log(`🎲 Random slug selected: ${randomSlug}`);",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "*/*"
+									},
+									{
+										"key": "accept-language",
+										"value": "en-GB,en-US;q=0.9,en;q=0.8"
+									},
+									{
+										"key": "cache-control",
+										"value": "no-cache"
+									},
+									{
+										"key": "pragma",
+										"value": "no-cache"
+									},
+									{
+										"key": "priority",
+										"value": "u=1, i"
+									},
+									{
+										"key": "referer",
+										"value": "https://pages-mamamia-com-au-c6a.pages.dev/"
+									},
+									{
+										"key": "sec-fetch-dest",
+										"value": "empty"
+									},
+									{
+										"key": "sec-fetch-mode",
+										"value": "cors"
+									},
+									{
+										"key": "sec-fetch-site",
+										"value": "same-origin"
+									},
+									{
+										"key": "user-agent",
+										"value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+									},
+									{
+										"key": "Cookie",
+										"value": "_ga=GA1.1.763605260.1753534401; __stripe_mid=c7c2a452-d97b-43e5-a3db-44a7c9a1667023ec73; _cb=ByAYSeBIIObdDA8osI; mm_user_id=sHjfNn64x6dwH3YJIQPu; _pbjs_userid_consent_data=3524755945110770; _hjSessionUser_6561314=eyJpZCI6IjI2NGE2OWViLWJjYTYtNWNmZC04NzM2LTA5MzExMGM0ODE4ZCIsImNyZWF0ZWQiOjE3NjIzMTk1NzIxNTgsImV4aXN0aW5nIjp0cnVlfQ==; _hjSession_6561314=eyJpZCI6IjE1MjIxNTlkLWQ1ZDMtNGI5OC05NGU4LTlkNzRmNDE1OTVkOSIsImMiOjE3NjIzMTk1NzIxNTgsInMiOjEsInIiOjEsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjoxLCJzcCI6MH0=; __gads=ID=9ae2249dd02d0f6c:T=1753750548:RT=1762319876:S=ALNI_Ma7X7j4ZdD_GSZvYoH6UpGyXR23cQ; __gpi=UID=0000117088735a84:T=1753750548:RT=1762319876:S=ALNI_MZ_iDyyXRq85GJde-NRWWnKiZRHLw; _chartbeat2=.1761539648471.1762319986724.1111000101.CqPqxdCx8mqVDef3VVYtfh3wAE0M.1; _cb_svref=external; _ga_DCYKG3Q1EV=GS2.1.s1762319572$o63$g1$t1762319987$j35$l0$h0"
+									}
+								],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/page/podcasts",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"page",
+										"podcasts"
+									]
+								},
+								"description": "Generated from cURL: curl 'https://pages-mamamia-com-au-c6a.pages.dev/api/user' \\\n  -H 'accept: */*' \\\n  -H 'accept-language: en-GB,en-US;q=0.9,en;q=0.8' \\\n  -H 'authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjU0NTEzMjA5OWFkNmJmNjEzODJiNmI0Y2RlOWEyZGZlZDhjYjMwZjAiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiRGFyeWwgRm9uZyIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NMd2p4Uy1EVVdyQVBfQ0hTQ0RsQzNyYlJzOV9tMlZPM0o4cWhSdnFVNnJaNFp0V2M4PXM5Ni1jIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL21hbWFtaWEtcHdhIiwiYXVkIjoibWFtYW1pYS1wd2EiLCJhdXRoX3RpbWUiOjE3NTk0NTU5NTYsInVzZXJfaWQiOiJzSGpmTm42NHg2ZHdIM1lKSVFQdSIsInN1YiI6InNIamZObjY0eDZkd0gzWUpJUVB1IiwiaWF0IjoxNzYyMzE5NTczLCJleHAiOjE3NjIzMjMxNzMsImVtYWlsIjoiZGFyeWwuZm9uZ0BtYW1hbWlhLmNvbS5hdSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTA1MzU2MjA0MzA3NTUzMDM1Mzc4Il0sImVtYWlsIjpbImRhcnlsLmZvbmdAbWFtYW1pYS5jb20uYXUiXX0sInNpZ25faW5fcHJvdmlkZXIiOiJwYXNzd29yZCJ9fQ.h2zdmJiTmicdWbXirBrkJIUoar87eEL_feQhrdIKrRUzHWz062G0_l3drb4l7AkDxoOLNvevvEXbjdBCGVI5O8Fluh4J65btPihJsguGRcUUM4OhtOYE6FDXFdD6N7uZ-fg_jNGQg1MrqgGKylMcYRB-UNS-Nn9tXwju6zeMilbSfaItTzDKhBaOPAenY9AypOnbI44zoZXWyCJVfZyeNoZ7sN-QXmm9JZQ3sTis14xEzoyuNmVGcTJO2kxdfV8RNrLgmNpQXkySx7feiBX8puB1jxbS4-TxiC2llT7yH1gxy9hyhMZGu34-ncptKVapyWZZ-a2bjhB3UCXynQKzIQ' \\\n  -H 'cache-control: no-cache' \\\n  -b '_ga=GA1.1.763605260.1753534401; __stripe_mid=c7c2a452-d97b-43e5-a3db-44a7c9a1667023ec73; _cb=ByAYSeBIIObdDA8osI; mm_user_id=sHjfNn64x6dwH3YJIQPu; _pbjs_userid_consent_data=3524755945110770; _hjSessionUser_6561314=eyJpZCI6IjI2NGE2OWViLWJjYTYtNWNmZC04NzM2LTA5MzExMGM0ODE4ZCIsImNyZWF0ZWQiOjE3NjIzMTk1NzIxNTgsImV4aXN0aW5nIjp0cnVlfQ==; _hjSession_6561314=eyJpZCI6IjE1MjIxNTlkLWQ1ZDMtNGI5OC05NGU4LTlkNzRmNDE1OTVkOSIsImMiOjE3NjIzMTk1NzIxNTgsInMiOjEsInIiOjEsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjoxLCJzcCI6MH0=; __gads=ID=9ae2249dd02d0f6c:T=1753750548:RT=1762319876:S=ALNI_Ma7X7j4ZdD_GSZvYoH6UpGyXR23cQ; __gpi=UID=0000117088735a84:T=1753750548:RT=1762319876:S=ALNI_MZ_iDyyXRq85GJde-NRWWnKiZRHLw; _chartbeat2=.1761539648471.1762319986724.1111000101.CqPqxdCx8mqVDef3VVYtfh3wAE0M.1; _cb_svref=external; _ga_DCYKG3Q1EV=GS2.1.s1762319572$o63$g1$t1762319987$j35$l0$h0' \\\n  -H 'pragma: no-cache' \\\n  -H 'priority: u=1, i' \\\n  -H 'referer: https://pages-mamamia-com-au-c6a.pages.dev/' \\\n  -H 'sec-fetch-dest: empty' \\\n  -H 'sec-fetch-mode: cors' \\\n  -H 'sec-fetch-site: same-origin' \\\n  -H 'user-agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1'"
+							},
+							"response": []
+						},
+						{
+							"name": "/api/podcasts/show",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/podcasts/show/{{show_slug}}",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"podcasts",
+										"show",
+										"{{show_slug}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "video-page",
+					"item": [
+						{
+							"name": "api/page/videos",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Parse JSON response",
+											"let response = pm.response.json();",
+											"",
+											"// Collect all show slugs",
+											"let slugs = [];",
+											"response.data.blocks.forEach(block => {",
+											"    // console.log('block', block);",
+											"    block.data.items.forEach(item => {",
+											"        slugs.push({showSlug: item.show.slug, slug: item.slug});",
+											"    })    ",
+											"    ",
+											"    ",
+											"});",
+											"",
+											"if (slugs.length === 0) {",
+											"  console.warn(\"⚠️ No show slugs found\");",
+											"  return;",
+											"}",
+											"",
+											"// Pick one random slug",
+											"let randomSlug = slugs[Math.floor(Math.random() * slugs.length)];",
+											"",
+											"// Save the random slug to environment variable",
+											"pm.environment.set(\"video_show_slug\", randomSlug.showSlug);",
+											"pm.environment.set(\"video_ep_slug\", randomSlug.slug);",
+											"",
+											"console.log(`🎲 Random slug selected: ${JSON.stringify(randomSlug)}`);",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/page/videos",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"page",
+										"videos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/videos/show/[show-slug]",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/videos/show/{{video_show_slug}}",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"videos",
+										"show",
+										"{{video_show_slug}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "api/videos/show/[show-slug]/[ep-slug]",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/videos/show/{{video_show_slug}}/{{video_ep_slug}}",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"videos",
+										"show",
+										"{{video_show_slug}}",
+										"{{video_ep_slug}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/videos/shows",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/videos/shows",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"videos",
+										"shows"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "article-page",
+					"item": [
+						{
+							"name": "getArticleIdFromMostRead",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// Parse JSON response",
+											"let response = pm.response.json();",
+											"",
+											"const data = response.data;",
+											"",
+											"const idArray = [];",
+											"data.forEach(item => {",
+											"   idArray.push(item.id);",
+											"})",
+											"",
+											"//pick a random from the array.",
+											"const randomIdIndex = Math.floor(Math.random() * idArray.length);",
+											"pm.environment.set(\"article_id\", data[randomIdIndex].id);",
+											"pm.environment.set(\"article_slug\", data[randomIdIndex].slug);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/article/most-read",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"article",
+										"most-read"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "api/user/comment?feed_item_id=${article.id}&pageSize=200",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/user/comment?feed_item_id={{article_id}}&pageSize=200",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"comment"
+									],
+									"query": [
+										{
+											"key": "feed_item_id",
+											"value": "{{article_id}}"
+										},
+										{
+											"key": "pageSize",
+											"value": "200"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/article/similar/${articleId}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/article/similar/{{article_id}}",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"article",
+										"similar",
+										"{{article_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/api/user/count?typeName=comment&feed_item_id=${article.id}&status=approved",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/user/count?typeName=comment&feed_item_id={{article_id}}&status=approved",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"count"
+									],
+									"query": [
+										{
+											"key": "typeName",
+											"value": "comment"
+										},
+										{
+											"key": "feed_item_id",
+											"value": "{{article_id}}"
+										},
+										{
+											"key": "status",
+											"value": "approved"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "newsletter",
+					"item": [
+						{
+							"name": "https://uat.mamamia.com.au/api/page/newsletter",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/page/newsletter",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"page",
+										"newsletter"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "sitemap",
+					"item": [
+						{
+							"name": "getArticleSlugFromSiteMap",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// In the \"Tests\" tab of your Postman request",
+											"",
+											"// 1. Parse the XML response body into a JSON object.",
+											"const jsonData = xml2Json(pm.response.text());",
+											"",
+											"// 2. Access the array of URL objects.",
+											"const urls = jsonData.urlset.url;",
+											"",
+											"// 3. Map over the array to extract the URL and slug for each entry.",
+											"const sitemapData = urls.map(item => {",
+											"    // Get the full URL from the <loc> tag",
+											"    const fullUrl = item.loc;",
+											"    ",
+											"    // Use the URL constructor to easily parse the path",
+											"    const urlObject = new URL(fullUrl);",
+											"    ",
+											"    // Get the pathname (e.g., \"/annie-knight-bridesmaids/\")",
+											"    const pathname = urlObject.pathname;",
+											"    ",
+											"    // Remove the leading and trailing slashes to get the clean slug",
+											"    const slug = pathname.replace(/^\\/|\\/$/g, '');",
+											"    ",
+											"    // Return the object in the desired {url, slug} structure",
+											"    return {",
+											"        url: fullUrl,",
+											"        slug: slug",
+											"    };",
+											"});",
+											"",
+											"// 4. Store the array of objects as a JSON string in a collection variable.",
+											"pm.collectionVariables.set(\"sitemapArticles\", JSON.stringify(sitemapData));",
+											"pm.collectionVariables.set(\"articleIndex\", 0);",
+											"// pm.collectionVariables.set(\"currentArticleSlug\", articles[0].slug);",
+											"",
+											"console.log(\"Sitemap data has been extracted and stored in the 'sitemapArticles' collection variable.\");",
+											"console.log(\"Total articles found:\", sitemapData.length);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://cf.mamamia.com.au/news-sitemap.xml",
+									"protocol": "https",
+									"host": [
+										"cf",
+										"mamamia",
+										"com",
+										"au"
+									],
+									"path": [
+										"news-sitemap.xml"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "articleBySlug",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"const articles = JSON.parse(pm.collectionVariables.get(\"sitemapArticles\"));",
+											"const index = parseInt(pm.collectionVariables.get(\"articleIndex\"));",
+											"",
+											"// Check if we are still within the bounds of the array.",
+											"if (articles && index < articles.length) {",
+											"    // Set the slug for the request that is ABOUT to run.",
+											"    const currentSlug = articles[index].slug;",
+											"    pm.collectionVariables.set(\"currentArticleSlug\", currentSlug);",
+											"    console.log(`Running request for index ${index}, slug: ${currentSlug}`);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"// --- Tests for the response we just received ---",
+											"// pm.response will be defined here.",
+											"pm.test(`Status code is 200 for slug: ${pm.collectionVariables.get(\"currentArticleSlug\")}`, function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"// --- End of tests ---",
+											"",
+											"",
+											"// --- Logic to set up the NEXT iteration ---",
+											"const articles = JSON.parse(pm.collectionVariables.get(\"sitemapArticles\"));",
+											"let index = parseInt(pm.collectionVariables.get(\"articleIndex\"));",
+											"",
+											"// Increment the index for the next run.",
+											"index++;",
+											"",
+											"// Update the index in the collection variable.",
+											"pm.collectionVariables.set(\"articleIndex\", index);",
+											"",
+											"// Check if there are more articles to process.",
+											"if (index < articles.length) {",
+											"    // If yes, schedule this same request to run again.",
+											"    pm.execution.setNextRequest(\"articleBySlug\"); // <-- Use the exact name of this request.",
+											"} else {",
+											"    // If no, we are done. Stop the collection run.",
+											"    console.log(\"Finished processing all articles.\");",
+											"    pm.execution.setNextRequest(null);",
+											"    ",
+											"    // Optional: Clean up the variables.",
+											"    pm.collectionVariables.unset(\"sitemapArticles\");",
+											"    pm.collectionVariables.unset(\"articleIndex\");",
+											"    pm.collectionVariables.unset(\"currentArticleSlug\");",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{URL_DOMAIN}}/api/article/by-slug/{{currentArticleSlug}}",
+									"protocol": "https",
+									"host": [
+										"{{URL_DOMAIN}}"
+									],
+									"path": [
+										"api",
+										"article",
+										"by-slug",
+										"{{currentArticleSlug}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "URL_DOMAIN",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
