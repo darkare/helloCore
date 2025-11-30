@@ -1,0 +1,138 @@
+name: Post-Deployment Tests
+# ✅ This workflow is triggered automatically after the 'Manual Deploy by Tag' workflow completes successfully.
+on:
+  workflow_run:
+    workflows: ["Manual Deploy by Tag"]
+    types:
+      - completed
+
+jobs:
+  run-postman-tests:
+    # ✅ Only run this job if the triggering deployment workflow was successful.
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to checkout code and update release notes
+
+    steps:
+      - name: "📥 Get data from triggering workflow"
+        id: get_data
+        run: |
+          # The run name is "Deploy [environment] by tag tag_name"
+          # We parse this string to get the environment and tag for this test run.
+          RUN_NAME="${{ github.event.workflow_run.name }}"
+          echo "Parsing run name: $RUN_NAME"
+          
+          # Extract environment (e.g., 'uat' or 'prod')
+          ENV=$(echo "$RUN_NAME" | sed -n 's/.*\[\([^]]*\)\].*/\1/p')
+          echo "Extracted environment: $ENV"
+          
+          # Extract tag (e.g., 'v1.2.3')
+          TAG=$(echo "$RUN_NAME" | sed 's/.*by tag //')
+          echo "Extracted tag: $TAG"
+          
+          # Set the URL_DOMAIN based on the environment
+          if [ "$ENV" = "uat" ]; then
+            URL_DOMAIN="https://uat.mamamia.com.au"
+          elif [ "$ENV" = "prod" ]; then
+            URL_DOMAIN="https://www.mamamia.com.au"
+          else
+            echo "❌ Could not determine a valid environment from run name."
+            exit 1
+          fi
+          echo "Determined URL_DOMAIN: $URL_DOMAIN"
+
+          # Set outputs for subsequent steps
+          echo "environment=$ENV" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "url_domain=$URL_DOMAIN" >> $GITHUB_OUTPUT
+
+      - name: "Checkout code for tag: ${{ steps.get_data.outputs.tag }}"
+        uses: actions/checkout@v4
+        with:
+          # Use the head_sha from the completed workflow run to ensure we test the exact code that was deployed.
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - name: "Setup Node.js"
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: "Install Newman and reporters"
+        run: npm install -g newman newman-reporter-markdown
+
+      - name: "▶️ Run API Tests (mm-api-test)"
+        run: |
+          newman run postman/mm-api-test.postman_collection.json \
+            --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
+            --reporters cli,markdown \
+            --reporter-markdown-export api-test-report.md
+
+      - name: "▶️ Run Page Tests (mm-page-test)"
+        run: |
+          newman run postman/mm-page-test.postman_collection.json \
+            --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
+            --reporters cli,markdown \
+            --reporter-markdown-export page-test-report.md
+
+      - name: "📝 Append test reports to GitHub Release"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TZ: Australia/Sydney
+        run: |
+          TAG=${{ steps.get_data.outputs.tag }}
+          ENV=${{ steps.get_data.outputs.environment }}
+          NOW=$(date +"%Y-%m-%d %H:%M:%S %Z")
+
+          # Check if a release exists for the tag
+          if ! release_json=$(gh api repos/${{ github.repository }}/releases/tags/$TAG 2>/dev/null); then
+            echo "ℹ️ No release found for tag $TAG. Skipping report append."
+            exit 0
+          fi
+          
+          echo "✅ Release found for tag $TAG. Appending test results."
+          release_id=$(echo "$release_json" | jq -r .id)
+          current_body=$(echo "$release_json" | jq -r .body)
+
+          # Combine the markdown reports into a single variable
+          API_REPORT=$(cat api-test-report.md)
+          PAGE_REPORT=$(cat page-test-report.md)
+
+          # Create the new entry to be appended to the release notes
+          new_entry=$(cat <<EOF
+
+          ---
+          ### 🤖 Post-Deployment Test Results
+          <small>
+          - **Environment:** ${ENV^^}
+          - **Test Date:** ${NOW}
+          - **Workflow Run:** [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+          </small>
+
+          <details>
+          <summary><strong>API Test Summary (mm-api-test)</strong></summary>
+
+          ${API_REPORT}
+
+          </details>
+
+          <details>
+          <summary><strong>Page Load Test Summary (mm-page-test)</strong></summary>
+
+          ${PAGE_REPORT}
+
+          </details>
+          EOF
+          )
+
+          # Combine the existing release notes with the new test report
+          updated_body="${current_body}${new_entry}"
+
+          # Use the GitHub API to update the release body
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github.v3+json" \
+            /repos/${{ github.repository }}/releases/$release_id \
+            -f body="$updated_body"
+
+          echo "✅ Release $TAG updated with Postman test results."

@@ -1,0 +1,1680 @@
+{
+	"info": {
+		"_postman_id": "c91bd27b-f2a8-4bec-b530-e11d3ad9f118",
+		"name": "mm-api-test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6645707"
+	},
+	"item": [
+    {
+      "name": "anonymous-user",
+      "item": [
+        {
+          "name": "home-page",
+          "item": [
+            {
+              "name": "api/page/home",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(`Status code is 200 page/home`, function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "accept",
+                    "value": "*/*"
+                  },
+                  {
+                    "key": "accept-language",
+                    "value": "en-GB,en-US;q=0.9,en;q=0.8"
+                  },
+                  {
+                    "key": "cache-control",
+                    "value": "no-cache"
+                  },
+                  {
+                    "key": "pragma",
+                    "value": "no-cache"
+                  },
+                  {
+                    "key": "priority",
+                    "value": "u=1, i"
+                  },
+                  {
+                    "key": "sec-fetch-dest",
+                    "value": "empty"
+                  },
+                  {
+                    "key": "sec-fetch-mode",
+                    "value": "cors"
+                  },
+                  {
+                    "key": "sec-fetch-site",
+                    "value": "same-origin"
+                  },
+                  {
+                    "key": "user-agent",
+                    "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+                  },
+                  {
+                    "key": "Cookie",
+                    "value": "site_version=new",
+                    "type": "text"
+                  },
+                  {
+                    "key": "referer",
+                    "value": "https://prod.mamamia.com.au/",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/page/home",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "page", "home"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "api/article/most-read",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "pm.test(`Status code is 200 api/article/most-read`, function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "accept",
+                    "value": "*/*"
+                  },
+                  {
+                    "key": "accept-language",
+                    "value": "en-GB,en-US;q=0.9,en;q=0.8"
+                  },
+                  {
+                    "key": "cache-control",
+                    "value": "no-cache"
+                  },
+                  {
+                    "key": "pragma",
+                    "value": "no-cache"
+                  },
+                  {
+                    "key": "priority",
+                    "value": "u=1, i"
+                  },
+                  {
+                    "key": "sec-fetch-dest",
+                    "value": "empty"
+                  },
+                  {
+                    "key": "sec-fetch-mode",
+                    "value": "cors"
+                  },
+                  {
+                    "key": "sec-fetch-site",
+                    "value": "same-origin"
+                  },
+                  {
+                    "key": "user-agent",
+                    "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+                  }
+                ],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/article/most-read",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "article", "most-read"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "podcast-page",
+          "item": [
+            {
+              "name": "api/podcasts/episodes/trending",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "accept",
+                    "value": "*/*"
+                  },
+                  {
+                    "key": "accept-language",
+                    "value": "en-GB,en-US;q=0.9,en;q=0.8"
+                  },
+                  {
+                    "key": "cache-control",
+                    "value": "no-cache"
+                  },
+                  {
+                    "key": "pragma",
+                    "value": "no-cache"
+                  },
+                  {
+                    "key": "priority",
+                    "value": "u=1, i"
+                  },
+                  {
+                    "key": "referer",
+                    "value": "https://prod.mamamia.com.au/podcasts/"
+                  },
+                  {
+                    "key": "sec-fetch-dest",
+                    "value": "empty"
+                  },
+                  {
+                    "key": "sec-fetch-mode",
+                    "value": "cors"
+                  },
+                  {
+                    "key": "sec-fetch-site",
+                    "value": "same-origin"
+                  },
+                  {
+                    "key": "user-agent",
+                    "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+                  }
+                ],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/podcasts/episodes/trending",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "podcasts", "episodes", "trending"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "/api/page/podcasts",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Parse JSON response",
+                      "let response = pm.response.json();",
+                      "",
+                      "// Filter to only EpisodeFocusedCarousel blocks",
+                      "let carousels = response.data.blocks.filter(",
+                      "  b => b.type === \"EpisodeFocusedCarousel\"",
+                      ");",
+                      "",
+                      "// Collect all show slugs",
+                      "let slugs = [];",
+                      "carousels.forEach(block => {",
+                      "  block.data.items.forEach(item => {",
+                      "    if (item.show && item.show.slug && !item.show.paid) {",
+                      "      slugs.push(item.show.slug);",
+                      "    }",
+                      "  });",
+                      "});",
+                      "",
+                      "if (slugs.length === 0) {",
+                      "  console.warn(\"⚠️ No slugs found\");",
+                      "  return;",
+                      "}",
+                      "",
+                      "// Pick one random slug",
+                      "let randomSlug = slugs[Math.floor(Math.random() * slugs.length)];",
+                      "",
+                      "// Save the random slug to environment variable",
+                      "pm.environment.set(\"show_slug\", randomSlug);",
+                      "",
+                      "console.log(`🎲 Random slug selected: ${randomSlug}`);",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "accept",
+                    "value": "*/*"
+                  },
+                  {
+                    "key": "accept-language",
+                    "value": "en-GB,en-US;q=0.9,en;q=0.8"
+                  },
+                  {
+                    "key": "cache-control",
+                    "value": "no-cache"
+                  },
+                  {
+                    "key": "pragma",
+                    "value": "no-cache"
+                  },
+                  {
+                    "key": "priority",
+                    "value": "u=1, i"
+                  },
+                  {
+                    "key": "referer",
+                    "value": "https://www.mamamia.com.au/podcasts/"
+                  },
+                  {
+                    "key": "sec-fetch-dest",
+                    "value": "empty"
+                  },
+                  {
+                    "key": "sec-fetch-mode",
+                    "value": "cors"
+                  },
+                  {
+                    "key": "sec-fetch-site",
+                    "value": "same-origin"
+                  },
+                  {
+                    "key": "user-agent",
+                    "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+                  }
+                ],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/page/podcasts",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "page", "podcasts"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "/api/podcasts/show",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/podcasts/show/{{show_slug}}",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "podcasts", "show", "{{show_slug}}"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "video-page",
+          "item": [
+            {
+              "name": "api/page/videos",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Parse JSON response",
+                      "let response = pm.response.json();",
+                      "",
+                      "// Collect all show slugs",
+                      "let slugs = [];",
+                      "response.data.blocks.forEach(block => {",
+                      "    // console.log('block', block);",
+                      "    block.data.items.forEach(item => {",
+                      "        slugs.push({showSlug: item.show.slug, slug: item.slug});",
+                      "    })    ",
+                      "    ",
+                      "    ",
+                      "});",
+                      "",
+                      "if (slugs.length === 0) {",
+                      "  console.warn(\"⚠️ No show slugs found\");",
+                      "  return;",
+                      "}",
+                      "",
+                      "// Pick one random slug",
+                      "let randomSlug = slugs[Math.floor(Math.random() * slugs.length)];",
+                      "",
+                      "// Save the random slug to environment variable",
+                      "pm.environment.set(\"video_show_slug\", randomSlug.showSlug);",
+                      "pm.environment.set(\"video_ep_slug\", randomSlug.slug);",
+                      "",
+                      "console.log(`🎲 Random slug selected: ${JSON.stringify(randomSlug)}`);",
+                      ""
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/page/videos",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "page", "videos"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "/api/videos/show/[show-slug]",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/videos/show/{{video_show_slug}}",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "videos", "show", "{{video_show_slug}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "api/videos/show/[show-slug]/[ep-slug]",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/videos/show/{{video_show_slug}}/{{video_ep_slug}}",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": [
+                    "api",
+                    "videos",
+                    "show",
+                    "{{video_show_slug}}",
+                    "{{video_ep_slug}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "/api/videos/shows",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [""],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/videos/shows",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "videos", "shows"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "article-page",
+          "item": [
+            {
+              "name": "getArticleIdFromMostRead",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// Parse JSON response",
+                      "let response = pm.response.json();",
+                      "",
+                      "const data = response.data;",
+                      "",
+                      "const idArray = [];",
+                      "data.forEach(item => {",
+                      "   idArray.push(item.id);",
+                      "})",
+                      "",
+                      "//pick a random from the array.",
+                      "const randomIdIndex = Math.floor(Math.random() * idArray.length);",
+                      "pm.environment.set(\"article_id\", data[randomIdIndex].id);",
+                      "pm.environment.set(\"article_slug\", data[randomIdIndex].slug);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/article/most-read",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "article", "most-read"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "api/user/comment?feed_item_id=${article.id}&pageSize=200",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/user/comment?feed_item_id={{article_id}}&pageSize=200",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "user", "comment"],
+                  "query": [
+                    {
+                      "key": "feed_item_id",
+                      "value": "{{article_id}}"
+                    },
+                    {
+                      "key": "pageSize",
+                      "value": "200"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "/api/article/similar/${articleId}",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/article/similar/{{article_id}}",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "article", "similar", "{{article_id}}"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "/api/user/count?typeName=comment&feed_item_id=${article.id}&status=approved",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/user/count?typeName=comment&feed_item_id={{article_id}}&status=approved",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "user", "count"],
+                  "query": [
+                    {
+                      "key": "typeName",
+                      "value": "comment"
+                    },
+                    {
+                      "key": "feed_item_id",
+                      "value": "{{article_id}}"
+                    },
+                    {
+                      "key": "status",
+                      "value": "approved"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "newsletter",
+          "item": [
+            {
+              "name": "https://uat.mamamia.com.au/api/page/newsletter",
+              "request": {
+                "auth": {
+                  "type": "noauth"
+                },
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/page/newsletter",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": ["api", "page", "newsletter"]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "sitemap",
+          "item": [
+            {
+              "name": "getArticleSlugFromSiteMap",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// In the \"Tests\" tab of your Postman request",
+                      "",
+                      "// 1. Parse the XML response body into a JSON object.",
+                      "const jsonData = xml2Json(pm.response.text());",
+                      "",
+                      "// 2. Access the array of URL objects.",
+                      "const urls = jsonData.urlset.url;",
+                      "",
+                      "// 3. Map over the array to extract the URL and slug for each entry.",
+                      "const sitemapData = urls.map(item => {",
+                      "    // Get the full URL from the <loc> tag",
+                      "    const fullUrl = item.loc;",
+                      "    ",
+                      "    // Use the URL constructor to easily parse the path",
+                      "    const urlObject = new URL(fullUrl);",
+                      "    ",
+                      "    // Get the pathname (e.g., \"/annie-knight-bridesmaids/\")",
+                      "    const pathname = urlObject.pathname;",
+                      "    ",
+                      "    // Remove the leading and trailing slashes to get the clean slug",
+                      "    const slug = pathname.replace(/^\\/|\\/$/g, '');",
+                      "    ",
+                      "    // Return the object in the desired {url, slug} structure",
+                      "    return {",
+                      "        url: fullUrl,",
+                      "        slug: slug",
+                      "    };",
+                      "});",
+                      "",
+                      "// 4. Store the array of objects as a JSON string in a collection variable.",
+                      "pm.collectionVariables.set(\"sitemapArticles\", JSON.stringify(sitemapData));",
+                      "pm.collectionVariables.set(\"articleIndex\", 0);",
+                      "// pm.collectionVariables.set(\"currentArticleSlug\", articles[0].slug);",
+                      "",
+                      "console.log(\"Sitemap data has been extracted and stored in the 'sitemapArticles' collection variable.\");",
+                      "console.log(\"Total articles found:\", sitemapData.length);"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "https://cf.mamamia.com.au/news-sitemap.xml",
+                  "host": ["cf", "mamamia", "com", "au"],
+                  "path": ["news-sitemap.xml"]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "articleBySlug",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "exec": [
+                      "const articles = JSON.parse(pm.collectionVariables.get(\"sitemapArticles\"));",
+                      "const index = parseInt(pm.collectionVariables.get(\"articleIndex\"));",
+                      "",
+                      "// Check if we are still within the bounds of the array.",
+                      "if (articles && index < articles.length) {",
+                      "    // Set the slug for the request that is ABOUT to run.",
+                      "    const currentSlug = articles[index].slug;",
+                      "    pm.collectionVariables.set(\"currentArticleSlug\", currentSlug);",
+                      "    console.log(`Running request for index ${index}, slug: ${currentSlug}`);",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "// --- Tests for the response we just received ---",
+                      "// pm.response will be defined here.",
+                      "pm.test(`Status code is 200 for slug: ${pm.collectionVariables.get(\"currentArticleSlug\")}`, function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "// --- End of tests ---",
+                      "",
+                      "",
+                      "// --- Logic to set up the NEXT iteration ---",
+                      "const articles = JSON.parse(pm.collectionVariables.get(\"sitemapArticles\"));",
+                      "let index = parseInt(pm.collectionVariables.get(\"articleIndex\"));",
+                      "",
+                      "// Increment the index for the next run.",
+                      "index++;",
+                      "",
+                      "// Update the index in the collection variable.",
+                      "pm.collectionVariables.set(\"articleIndex\", index);",
+                      "",
+                      "// Check if there are more articles to process.",
+                      "if (index < articles.length) {",
+                      "    // If yes, schedule this same request to run again.",
+                      "    pm.execution.setNextRequest(\"articleBySlug\"); // <-- Use the exact name of this request.",
+                      "} else {",
+                      "    // If no, we are done with sitemap. Continue to the category tests.",
+                      "    console.log(\"Finished processing all articles. Moving to category tests.\");",
+                      "    pm.execution.setNextRequest(\"GET /api/category\");",
+                      "    ",
+                      "    // Optional: Clean up the variables.",
+                      "    pm.collectionVariables.unset(\"sitemapArticles\");",
+                      "    pm.collectionVariables.unset(\"articleIndex\");",
+                      "    pm.collectionVariables.unset(\"currentArticleSlug\");",
+                      "}"
+                    ],
+                    "type": "text/javascript",
+                    "packages": {},
+                    "requests": {}
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{URL_DOMAIN}}/api/article/by-slug/{{currentArticleSlug}}",
+                  "host": ["{{URL_DOMAIN}}"],
+                  "path": [
+                    "api",
+                    "article",
+                    "by-slug",
+                    "{{currentArticleSlug}}"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "category",
+      "item": [
+        {
+          "name": "GET /api/category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 for /api/category\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Parse JSON response",
+                  "let response = pm.response.json();",
+                  "let categories = response.data;",
+                  "",
+                  "if (categories && categories.length > 0) {",
+                  "    // Pick one random category",
+                  "    let randomCategory = categories[Math.floor(Math.random() * categories.length)];",
+                  "",
+                  "    // Save the random category id and slug to environment variables",
+                  "    pm.environment.set(\"category_id\", randomCategory.id);",
+                  "    pm.environment.set(\"category_slug\", randomCategory.slug);",
+                  "",
+                  "    console.log(`🎲 Random category selected: ID=${randomCategory.id}, Slug=${randomCategory.slug}`);",
+                  "} else {",
+                  "    console.warn(\"⚠️ No categories found to select from.\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/category",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["api", "category"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/category/by-id/{{category_id}}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 for /api/category/by-id\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/category/by-id/{{category_id}}",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["api", "category", "by-id", "{{category_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/category/by-slug/{{category_slug}}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 for /api/category/by-slug\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/category/by-slug/{{category_slug}}",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["api", "category", "by-slug", "{{category_slug}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/category/with-subcategories",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 for /api/category/with-subcategories\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Parse JSON response",
+                  "let response = pm.response.json();",
+                  "let categories = response.data;",
+                  "",
+                  "// Extract all categories with their details",
+                  "const categoryData = categories.map(cat => ({",
+                  "    id: cat.id,",
+                  "    slug: cat.slug,",
+                  "    name: cat.name,",
+                  "    subcategories: cat.subcategories || []",
+                  "}));",
+                  "",
+                  "// Extract all subcategories from all categories",
+                  "const subcategoryData = [];",
+                  "categories.forEach(cat => {",
+                  "    if (cat.subcategories && cat.subcategories.length > 0) {",
+                  "        cat.subcategories.forEach(sub => {",
+                  "            subcategoryData.push({",
+                  "                id: sub.id,",
+                  "                slug: sub.slug,",
+                  "                name: sub.name,",
+                  "                category_id: sub.category_id",
+                  "            });",
+                  "        });",
+                  "    }",
+                  "});",
+                  "",
+                  "// Store the arrays in collection variables",
+                  "pm.collectionVariables.set(\"categoriesWithSubs\", JSON.stringify(categoryData));",
+                  "pm.collectionVariables.set(\"categoryIndex\", 0);",
+                  "pm.collectionVariables.set(\"subcategoriesData\", JSON.stringify(subcategoryData));",
+                  "pm.collectionVariables.set(\"subcategoryIndex\", 0);",
+                  "",
+                  "// Also pick random items for non-loop tests",
+                  "if (categoryData.length > 0) {",
+                  "    let randomCategory = categoryData[Math.floor(Math.random() * categoryData.length)];",
+                  "    pm.environment.set(\"category_id\", randomCategory.id);",
+                  "    pm.environment.set(\"category_slug\", randomCategory.slug);",
+                  "}",
+                  "",
+                  "if (subcategoryData.length > 0) {",
+                  "    let randomSubcategory = subcategoryData[Math.floor(Math.random() * subcategoryData.length)];",
+                  "    pm.environment.set(\"subcategory_id\", randomSubcategory.id);",
+                  "    pm.environment.set(\"subcategory_slug\", randomSubcategory.slug);",
+                  "    console.log(`🎲 Random subcategory selected: ID=${randomSubcategory.id}, Slug=${randomSubcategory.slug}`);",
+                  "}",
+                  "",
+                  "console.log(\"Categories and subcategories extracted and stored.\");",
+                  "console.log(\"Total categories found:\", categoryData.length);",
+                  "console.log(\"Total subcategories found:\", subcategoryData.length);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/category/with-subcategories",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["api", "category", "with-subcategories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/category/by-id (Loop)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const categories = JSON.parse(pm.collectionVariables.get(\"categoriesWithSubs\"));",
+                  "const index = parseInt(pm.collectionVariables.get(\"categoryIndex\"));",
+                  "",
+                  "if (categories && index < categories.length) {",
+                  "    const currentCategory = categories[index];",
+                  "    pm.collectionVariables.set(\"currentCategoryId\", currentCategory.id);",
+                  "    pm.collectionVariables.set(\"currentCategorySlug\", currentCategory.slug);",
+                  "    pm.collectionVariables.set(\"currentCategoryName\", currentCategory.name);",
+                  "    console.log(`Testing category ${index + 1}/${categories.length}: ${currentCategory.name} (${currentCategory.slug})`);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Status code is 200 for category: ${pm.collectionVariables.get(\"currentCategoryName\")}`, function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const categories = JSON.parse(pm.collectionVariables.get(\"categoriesWithSubs\"));",
+                  "let index = parseInt(pm.collectionVariables.get(\"categoryIndex\"));",
+                  "",
+                  "index++;",
+                  "pm.collectionVariables.set(\"categoryIndex\", index);",
+                  "",
+                  "if (index < categories.length) {",
+                  "    pm.execution.setNextRequest(\"GET /api/category/by-id (Loop)\");",
+                  "} else {",
+                  "    console.log(\"Finished testing all categories.\");",
+                  "    pm.execution.setNextRequest(\"GET /api/category/by-slug (Loop)\");",
+                  "    pm.collectionVariables.set(\"categoryIndex\", 0);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/category/by-id/{{currentCategoryId}}",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["api", "category", "by-id", "{{currentCategoryId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/category/by-slug (Loop)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const categories = JSON.parse(pm.collectionVariables.get(\"categoriesWithSubs\"));",
+                  "const index = parseInt(pm.collectionVariables.get(\"categoryIndex\"));",
+                  "",
+                  "if (categories && index < categories.length) {",
+                  "    const currentCategory = categories[index];",
+                  "    pm.collectionVariables.set(\"currentCategorySlug\", currentCategory.slug);",
+                  "    pm.collectionVariables.set(\"currentCategoryName\", currentCategory.name);",
+                  "    console.log(`Testing category slug ${index + 1}/${categories.length}: ${currentCategory.name} (${currentCategory.slug})`);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Status code is 200 for category slug: ${pm.collectionVariables.get(\"currentCategoryName\")}`, function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const categories = JSON.parse(pm.collectionVariables.get(\"categoriesWithSubs\"));",
+                  "let index = parseInt(pm.collectionVariables.get(\"categoryIndex\"));",
+                  "",
+                  "index++;",
+                  "pm.collectionVariables.set(\"categoryIndex\", index);",
+                  "",
+                  "if (index < categories.length) {",
+                  "    pm.execution.setNextRequest(\"GET /api/category/by-slug (Loop)\");",
+                  "} else {",
+                  "    console.log(\"Finished testing all category slugs. Moving to subcategory tests.\");",
+                  "    pm.collectionVariables.unset(\"categoriesWithSubs\");",
+                  "    pm.collectionVariables.unset(\"categoryIndex\");",
+                  "    pm.collectionVariables.unset(\"currentCategoryId\");",
+                  "    pm.collectionVariables.unset(\"currentCategorySlug\");",
+                  "    pm.collectionVariables.unset(\"currentCategoryName\");",
+                  "    pm.execution.setNextRequest(\"GET /api/category/with-subcategories\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/category/by-slug/{{currentCategorySlug}}",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["api", "category", "by-slug", "{{currentCategorySlug}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "subcategory",
+      "item": [
+        {
+          "name": "GET /api/category/with-subcategories",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 for /api/category/with-subcategories\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Parse JSON response",
+                  "let response = pm.response.json();",
+                  "let categories = response.data;",
+                  "",
+                  "// Extract all subcategories from all categories",
+                  "const subcategoryData = [];",
+                  "categories.forEach(cat => {",
+                  "    if (cat.subcategories && cat.subcategories.length > 0) {",
+                  "        cat.subcategories.forEach(sub => {",
+                  "            subcategoryData.push({",
+                  "                id: sub.id,",
+                  "                slug: sub.slug,",
+                  "                name: sub.name,",
+                  "                category_id: sub.category_id",
+                  "            });",
+                  "        });",
+                  "    }",
+                  "});",
+                  "",
+                  "// Store the array in collection variable for loop tests",
+                  "pm.collectionVariables.set(\"subcategoriesData\", JSON.stringify(subcategoryData));",
+                  "pm.collectionVariables.set(\"subcategoryIndex\", 0);",
+                  "",
+                  "// Also pick one random subcategory for non-loop tests",
+                  "if (subcategoryData.length > 0) {",
+                  "    let randomSubcategory = subcategoryData[Math.floor(Math.random() * subcategoryData.length)];",
+                  "    pm.environment.set(\"subcategory_id\", randomSubcategory.id);",
+                  "    pm.environment.set(\"subcategory_slug\", randomSubcategory.slug);",
+                  "    console.log(`🎲 Random subcategory selected: ID=${randomSubcategory.id}, Slug=${randomSubcategory.slug}`);",
+                  "} else {",
+                  "    console.warn(\"⚠️ No subcategories found to select from.\");",
+                  "}",
+                  "",
+                  "console.log(\"Subcategories extracted and stored.\");",
+                  "console.log(\"Total subcategories found:\", subcategoryData.length);",
+                  "",
+                  "// Continue to loop tests when running subcategory folder",
+                  "pm.execution.setNextRequest(\"GET /api/subcategory/by-id (Loop)\");"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/category/with-subcategories",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["api", "category", "with-subcategories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/subcategory/by-id/{{subcategory_id}}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 for /api/subcategory/by-id\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/subcategory/by-id/{{subcategory_id}}",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["api", "subcategory", "by-id", "{{subcategory_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/subcategory/by-slug/{{subcategory_slug}}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 for /api/subcategory/by-slug\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/subcategory/by-slug/{{subcategory_slug}}",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["api", "subcategory", "by-slug", "{{subcategory_slug}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/subcategory/by-id (Loop)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const subcategories = JSON.parse(pm.collectionVariables.get(\"subcategoriesData\"));",
+                  "const index = parseInt(pm.collectionVariables.get(\"subcategoryIndex\"));",
+                  "",
+                  "if (subcategories && index < subcategories.length) {",
+                  "    const currentSubcategory = subcategories[index];",
+                  "    pm.collectionVariables.set(\"currentSubcategoryId\", currentSubcategory.id);",
+                  "    pm.collectionVariables.set(\"currentSubcategorySlug\", currentSubcategory.slug);",
+                  "    pm.collectionVariables.set(\"currentSubcategoryName\", currentSubcategory.name);",
+                  "    console.log(`Testing subcategory ${index + 1}/${subcategories.length}: ${currentSubcategory.name} (${currentSubcategory.slug})`);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Status code is 200 for subcategory: ${pm.collectionVariables.get(\"currentSubcategoryName\")}`, function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const subcategories = JSON.parse(pm.collectionVariables.get(\"subcategoriesData\"));",
+                  "let index = parseInt(pm.collectionVariables.get(\"subcategoryIndex\"));",
+                  "",
+                  "index++;",
+                  "pm.collectionVariables.set(\"subcategoryIndex\", index);",
+                  "",
+                  "if (index < subcategories.length) {",
+                  "    pm.execution.setNextRequest(\"GET /api/subcategory/by-id (Loop)\");",
+                  "} else {",
+                  "    console.log(\"Finished testing all subcategories by ID.\");",
+                  "    pm.execution.setNextRequest(\"GET /api/subcategory/by-slug (Loop)\");",
+                  "    pm.collectionVariables.set(\"subcategoryIndex\", 0);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/subcategory/by-id/{{currentSubcategoryId}}",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": [
+                "api",
+                "subcategory",
+                "by-id",
+                "{{currentSubcategoryId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/subcategory/by-slug (Loop)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const subcategories = JSON.parse(pm.collectionVariables.get(\"subcategoriesData\"));",
+                  "const index = parseInt(pm.collectionVariables.get(\"subcategoryIndex\"));",
+                  "",
+                  "if (subcategories && index < subcategories.length) {",
+                  "    const currentSubcategory = subcategories[index];",
+                  "    pm.collectionVariables.set(\"currentSubcategorySlug\", currentSubcategory.slug);",
+                  "    pm.collectionVariables.set(\"currentSubcategoryName\", currentSubcategory.name);",
+                  "    console.log(`Testing subcategory slug ${index + 1}/${subcategories.length}: ${currentSubcategory.name} (${currentSubcategory.slug})`);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(`Status code is 200 for subcategory slug: ${pm.collectionVariables.get(\"currentSubcategoryName\")}`, function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const subcategories = JSON.parse(pm.collectionVariables.get(\"subcategoriesData\"));",
+                  "let index = parseInt(pm.collectionVariables.get(\"subcategoryIndex\"));",
+                  "",
+                  "index++;",
+                  "pm.collectionVariables.set(\"subcategoryIndex\", index);",
+                  "",
+                  "if (index < subcategories.length) {",
+                  "    pm.execution.setNextRequest(\"GET /api/subcategory/by-slug (Loop)\");",
+                  "} else {",
+                  "    console.log(\"Finished testing all subcategories by slug.\");",
+                  "    pm.execution.setNextRequest(null);",
+                  "    pm.collectionVariables.unset(\"subcategoriesData\");",
+                  "    pm.collectionVariables.unset(\"subcategoryIndex\");",
+                  "    pm.collectionVariables.unset(\"currentSubcategoryId\");",
+                  "    pm.collectionVariables.unset(\"currentSubcategorySlug\");",
+                  "    pm.collectionVariables.unset(\"currentSubcategoryName\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              },
+              {
+                "key": "priority",
+                "value": "u=1, i"
+              },
+              {
+                "key": "sec-fetch-dest",
+                "value": "empty"
+              },
+              {
+                "key": "sec-fetch-mode",
+                "value": "cors"
+              },
+              {
+                "key": "sec-fetch-site",
+                "value": "same-origin"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/subcategory/by-slug/{{currentSubcategorySlug}}",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": [
+                "api",
+                "subcategory",
+                "by-slug",
+                "{{currentSubcategorySlug}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+	"variable": [
+		{
+			"key": "URL_DOMAIN",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

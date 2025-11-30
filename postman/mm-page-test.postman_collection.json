@@ -1,0 +1,503 @@
+{
+  "info": {
+    "_postman_id": "85b6ff02-f699-4ba8-9188-714bd6c4bd0c",
+    "name": "mm-page-test",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "6645707"
+  },
+  "item": [
+    {
+      "name": "sitemap",
+      "item": [
+        {
+          "name": "1-getArticleSlugFromSiteMap",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Parse the XML response body into a JSON object.",
+                  "const jsonData = xml2Json(pm.response.text());",
+                  "",
+                  "// 2. Access the array of URL objects.",
+                  "const urls = jsonData.urlset.url;",
+                  "",
+                  "// 3. Map over the array to extract the URL and slug for each entry.",
+                  "const sitemapData = urls.map(item => {",
+                  "    // Get the full URL from the <loc> tag",
+                  "    const fullUrl = item.loc;",
+                  "    ",
+                  "    // Use the URL constructor to easily parse the path",
+                  "    const urlObject = new URL(fullUrl);",
+                  "    ",
+                  "    // Get the pathname (e.g., \"/annie-knight-bridesmaids/\")",
+                  "    const pathname = urlObject.pathname;",
+                  "    ",
+                  "    // Remove the leading and trailing slashes to get the clean slug",
+                  "    const slug = pathname.replace(/^\\/|\\/$/g, '');",
+                  "    ",
+                  "    // Return the object in the desired {url, slug} structure",
+                  "    return {",
+                  "        url: fullUrl,",
+                  "        slug: slug",
+                  "    };",
+                  "});",
+                  "",
+                  "// 4. Store the array of objects as a JSON string in a collection variable.",
+                  "pm.collectionVariables.set(\"sitemapArticles\", JSON.stringify(sitemapData));",
+                  "pm.collectionVariables.set(\"articleIndex\", 0);",
+                  "",
+                  "console.log(\"Sitemap data has been extracted and stored in the 'sitemapArticles' collection variable.\");",
+                  "console.log(\"Total articles found:\", sitemapData.length);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "packages": {},
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://cf.mamamia.com.au/news-sitemap.xml",
+              "host": ["cf", "mamamia", "com", "au"],
+              "path": ["news-sitemap.xml"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2-articleUrl",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const articles = JSON.parse(pm.collectionVariables.get(\"sitemapArticles\"));",
+                  "const index = parseInt(pm.collectionVariables.get(\"articleIndex\"));",
+                  "",
+                  "// Check if we are still within the bounds of the array.",
+                  "if (articles && index < articles.length) {",
+                  "    // Set the slug for the request that is ABOUT to run.",
+                  "    const currentUrl = articles[index].url;",
+                  "    pm.collectionVariables.set(\"currentArticleUrl\", currentUrl);",
+                  "    console.log(`Running request for index ${index}, slug: ${currentUrl}`);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// --- Tests for the response we just received ---",
+                  "// pm.response will be defined here.",
+                  "pm.test(`Status code is 200 for url: ${pm.collectionVariables.get(\"currentArticleUrl\")}`, function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "// --- End of tests ---",
+                  "",
+                  "",
+                  "// --- Logic to set up the NEXT iteration ---",
+                  "const articles = JSON.parse(pm.collectionVariables.get(\"sitemapArticles\"));",
+                  "let index = parseInt(pm.collectionVariables.get(\"articleIndex\"));",
+                  "",
+                  "// Increment the index for the next run.",
+                  "index++;",
+                  "",
+                  "// Update the index in the collection variable.",
+                  "pm.collectionVariables.set(\"articleIndex\", index);",
+                  "",
+                  "// Check if there are more articles to process.",
+                  "if (index < articles.length) {",
+                  "    // If yes, schedule this same request to run again.",
+                  "    pm.execution.setNextRequest(\"2-articleUrl\"); // <-- Use the exact name of this request.",
+                  "} else {",
+                  "    // If no, we are done. Continue to category pages.",
+                  "    console.log(\"Finished processing all articles. Moving to category pages.\");",
+                  "    pm.execution.setNextRequest(\"1-getCategoriesFromWithSubcategories\");",
+                  "    ",
+                  "    // Optional: Clean up the variables.",
+                  "    pm.collectionVariables.unset(\"sitemapArticles\");",
+                  "    pm.collectionVariables.unset(\"articleIndex\");",
+                  "    pm.collectionVariables.unset(\"currentArticleUrl\");",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{currentArticleUrl}}",
+              "host": ["{{currentArticleUrl}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "category-pages",
+      "item": [
+        {
+          "name": "1-getCategoriesFromWithSubcategories",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 for /api/category/with-subcategories\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Parse JSON response",
+                  "let response = pm.response.json();",
+                  "let categories = response.data;",
+                  "",
+                  "// Extract all categories with their slugs",
+                  "const categoryData = categories.map(cat => ({",
+                  "    id: cat.id,",
+                  "    slug: cat.slug,",
+                  "    name: cat.name",
+                  "}));",
+                  "",
+                  "// Extract all subcategories from all categories",
+                  "const subcategoryData = [];",
+                  "categories.forEach(cat => {",
+                  "    if (cat.subcategories && cat.subcategories.length > 0) {",
+                  "        cat.subcategories.forEach(sub => {",
+                  "            subcategoryData.push({",
+                  "                id: sub.id,",
+                  "                slug: sub.slug,",
+                  "                name: sub.name,",
+                  "                category_slug: cat.slug",
+                  "            });",
+                  "        });",
+                  "    }",
+                  "});",
+                  "",
+                  "// Store the arrays in collection variables",
+                  "pm.collectionVariables.set(\"categoriesForPageTest\", JSON.stringify(categoryData));",
+                  "pm.collectionVariables.set(\"categoryPageIndex\", 0);",
+                  "pm.collectionVariables.set(\"subcategoriesForPageTest\", JSON.stringify(subcategoryData));",
+                  "pm.collectionVariables.set(\"subcategoryPageIndex\", 0);",
+                  "",
+                  "console.log(\"Categories and subcategories extracted and stored for page testing.\");",
+                  "console.log(\"Total categories found:\", categoryData.length);",
+                  "console.log(\"Total subcategories found:\", subcategoryData.length);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/category/with-subcategories",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["api", "category", "with-subcategories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2-categoryPageUrl",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const categories = JSON.parse(pm.collectionVariables.get(\"categoriesForPageTest\"));",
+                  "const index = parseInt(pm.collectionVariables.get(\"categoryPageIndex\"));",
+                  "",
+                  "if (categories && index < categories.length) {",
+                  "    const currentCategory = categories[index];",
+                  "    pm.collectionVariables.set(\"currentCategorySlug\", currentCategory.slug);",
+                  "    pm.collectionVariables.set(\"currentCategoryName\", currentCategory.name);",
+                  "    console.log(`Testing category page ${index + 1}/${categories.length}: ${currentCategory.name} (/${currentCategory.slug})`);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const maxResponseTime = parseInt(pm.collectionVariables.get(\"maxResponseTime\") || \"5000\");",
+                  "const categoryName = pm.collectionVariables.get(\"currentCategoryName\");",
+                  "",
+                  "pm.test(`Status code is 200 for category page: ${categoryName}`, function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(`Response time is less than ${maxResponseTime}ms for ${categoryName}`, function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(maxResponseTime);",
+                  "});",
+                  "",
+                  "console.log(`⏱️ Response time: ${pm.response.responseTime}ms`);",
+                  "",
+                  "// Logic to set up the NEXT iteration",
+                  "const categories = JSON.parse(pm.collectionVariables.get(\"categoriesForPageTest\"));",
+                  "let index = parseInt(pm.collectionVariables.get(\"categoryPageIndex\"));",
+                  "",
+                  "index++;",
+                  "pm.collectionVariables.set(\"categoryPageIndex\", index);",
+                  "",
+                  "if (index < categories.length) {",
+                  "    pm.execution.setNextRequest(\"2-categoryPageUrl\");",
+                  "} else {",
+                  "    console.log(\"Finished testing all category pages. Moving to subcategory pages.\");",
+                  "    pm.collectionVariables.unset(\"categoriesForPageTest\");",
+                  "    pm.collectionVariables.unset(\"categoryPageIndex\");",
+                  "    pm.collectionVariables.unset(\"currentCategorySlug\");",
+                  "    pm.collectionVariables.unset(\"currentCategoryName\");",
+                  "    // Continue to subcategory folder",
+                  "    pm.execution.setNextRequest(\"1-getSubcategoriesFromWithSubcategories\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "text/html"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/{{currentCategorySlug}}",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["{{currentCategorySlug}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "subcategory-pages",
+      "item": [
+        {
+          "name": "1-getSubcategoriesFromWithSubcategories",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 for /api/category/with-subcategories\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "// Parse JSON response",
+                  "let response = pm.response.json();",
+                  "let categories = response.data;",
+                  "",
+                  "// Extract all subcategories from all categories",
+                  "const subcategoryData = [];",
+                  "categories.forEach(cat => {",
+                  "    if (cat.subcategories && cat.subcategories.length > 0) {",
+                  "        cat.subcategories.forEach(sub => {",
+                  "            subcategoryData.push({",
+                  "                id: sub.id,",
+                  "                slug: sub.slug,",
+                  "                name: sub.name,",
+                  "                category_slug: cat.slug",
+                  "            });",
+                  "        });",
+                  "    }",
+                  "});",
+                  "",
+                  "// Store the array in collection variable",
+                  "pm.collectionVariables.set(\"subcategoriesForPageTest\", JSON.stringify(subcategoryData));",
+                  "pm.collectionVariables.set(\"subcategoryPageIndex\", 0);",
+                  "",
+                  "console.log(\"Subcategories extracted and stored for page testing.\");",
+                  "console.log(\"Total subcategories found:\", subcategoryData.length);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "*/*"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "pragma",
+                "value": "no-cache"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/api/category/with-subcategories",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["api", "category", "with-subcategories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2-subcategoryPageUrl",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const subcategories = JSON.parse(pm.collectionVariables.get(\"subcategoriesForPageTest\"));",
+                  "const index = parseInt(pm.collectionVariables.get(\"subcategoryPageIndex\"));",
+                  "",
+                  "if (subcategories && index < subcategories.length) {",
+                  "    const currentSubcategory = subcategories[index];",
+                  "    pm.collectionVariables.set(\"currentSubcategorySlug\", currentSubcategory.slug);",
+                  "    pm.collectionVariables.set(\"currentCategorySlug\", currentSubcategory.category_slug);",
+                  "    pm.collectionVariables.set(\"currentSubcategoryName\", currentSubcategory.name);",
+                  "    console.log(`Testing subcategory page ${index + 1}/${subcategories.length}: ${currentSubcategory.name} (/${currentSubcategory.category_slug}/${currentSubcategory.slug})`);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const maxResponseTime = parseInt(pm.collectionVariables.get(\"maxResponseTime\") || \"5000\");",
+                  "const subcategoryName = pm.collectionVariables.get(\"currentSubcategoryName\");",
+                  "",
+                  "pm.test(`Status code is 200 for subcategory page: ${subcategoryName}`, function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(`Response time is less than ${maxResponseTime}ms for ${subcategoryName}`, function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(maxResponseTime);",
+                  "});",
+                  "",
+                  "console.log(`⏱️ Response time: ${pm.response.responseTime}ms`);",
+                  "",
+                  "// Logic to set up the NEXT iteration",
+                  "const subcategories = JSON.parse(pm.collectionVariables.get(\"subcategoriesForPageTest\"));",
+                  "let index = parseInt(pm.collectionVariables.get(\"subcategoryPageIndex\"));",
+                  "",
+                  "index++;",
+                  "pm.collectionVariables.set(\"subcategoryPageIndex\", index);",
+                  "",
+                  "if (index < subcategories.length) {",
+                  "    pm.execution.setNextRequest(\"2-subcategoryPageUrl\");",
+                  "} else {",
+                  "    console.log(\"Finished testing all subcategory pages.\");",
+                  "    pm.execution.setNextRequest(null);",
+                  "    pm.collectionVariables.unset(\"subcategoriesForPageTest\");",
+                  "    pm.collectionVariables.unset(\"subcategoryPageIndex\");",
+                  "    pm.collectionVariables.unset(\"currentSubcategorySlug\");",
+                  "    pm.collectionVariables.unset(\"currentCategorySlug\");",
+                  "    pm.collectionVariables.unset(\"currentSubcategoryName\");",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "text/html"
+              },
+              {
+                "key": "accept-language",
+                "value": "en-GB,en-US;q=0.9,en;q=0.8"
+              },
+              {
+                "key": "cache-control",
+                "value": "no-cache"
+              },
+              {
+                "key": "user-agent",
+                "value": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              }
+            ],
+            "url": {
+              "raw": "{{URL_DOMAIN}}/{{currentCategorySlug}}/{{currentSubcategorySlug}}",
+              "host": ["{{URL_DOMAIN}}"],
+              "path": ["{{currentCategorySlug}}", "{{currentSubcategorySlug}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "URL_DOMAIN",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "maxResponseTime",
+      "value": "5000",
+      "type": "default"
+    }
+  ]
+}
