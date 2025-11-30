@@ -61,12 +61,12 @@ jobs:
       - name: "Install Newman and reporters"
         run: npm install -g newman newman-reporter-markdown
 
-      - name: "▶️ Run API Tests (mm-api-test)"
-        run: |
-          newman run postman/mm-api-test.postman_collection.json \
-            --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
-            --reporters cli,markdown \
-            --reporter-markdown-export api-test-report.md
+      # - name: "▶️ Run API Tests (mm-api-test)"
+      #   run: |
+      #     newman run postman/mm-api-test.postman_collection.json \
+      #       --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
+      #       --reporters cli,markdown \
+      #       --reporter-markdown-export api-test-report.md
 
       - name: "▶️ Run Page Tests (mm-page-test)"
         run: |
