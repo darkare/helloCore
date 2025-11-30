@@ -1,4 +1,5 @@
 name: Manual Deploy by Tag
+run-name: Deploy [${{ github.event.inputs.environment }}] by tag ${{ github.event.inputs.tag }}
 
 on:
   workflow_dispatch:
