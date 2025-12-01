@@ -103,7 +103,6 @@ jobs:
           current_body=$(echo "$release_json" | jq -r .body)
 
           # 2. Extract failure details and count failed assertions from the text output
-          |
           echo "📄 Extracting values from JSON report..."
           
           if [ -f mm-page-test-report.json ]; then
