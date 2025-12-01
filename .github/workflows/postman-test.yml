@@ -75,7 +75,8 @@ jobs:
           # The command will fail if tests fail, so we add `|| true` to allow the workflow to continue to the reporting step.
           postman collection run postman/mm-page-test.postman_collection.json \
             --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
-            --reporters cli,html --reporter-html-export mm-page-test-report.html \
+            --reporters cli,html,json --reporter-html-export mm-page-test-report.html \
+            --reporter-json-export mm-page-test-report.json \
              | sed 's/\x1b\[[0-9;]*m//g' > postman-output.txt || true
 
       - name: "📎 Attach Report & Update Release Notes"
@@ -102,23 +103,28 @@ jobs:
           current_body=$(echo "$release_json" | jq -r .body)
 
           # 2. Extract failure details and count failed assertions from the text output
-          FAILURE_DETAILS=$(sed -n '/#  failure/,$p' postman-output.txt)
-          # This awk command finds the 'assertions' line and prints the last field (the failure count)
-          FAILURE_COUNT=$(awk '/assertions/ {print $NF}' postman-output.txt | tr -d '│' | xargs)
+          |
+          echo "📄 Extracting values from JSON report..."
+          
+          if [ -f mm-page-test-report.json ]; then
+            TOTAL_TESTS=$(jq '.run.summary.tests.executed' mm-page-test-report.json)
+            FAILED_TESTS=$(jq '.run.summary.tests.failed'   mm-page-test-report.json)
+            PASSED_TESTS=$(jq '.run.summary.tests.passed'   mm-page-test-report.json)
+          else
+            TOTAL_TESTS=0
+            FAILED_TESTS=0
+            PASSED_TESTS=0
+          fi
 
           # 3. Conditionally format the summary based on the failure count
-          if [ -n "$FAILURE_COUNT" ] && [ "$FAILURE_COUNT" -gt 0 ]; then
+          if [ -n "$FAILED_TESTS" ] && [ "$FAILED_TESTS" -gt 0 ]; then
             SUMMARY_BODY=$(cat <<EOF
-          **❌ ${FAILURE_COUNT} assertion(s) failed!**
+          **❌ ${FAILED_TESTS} test(s) failed!**
 
-          **Failure Details:**
-          \`\`\`
-          ${FAILURE_DETAILS}
-          \`\`\`
           EOF
           )
           else
-            SUMMARY_BODY="**✅ All tests passed!**"
+            SUMMARY_BODY=`**✅ All tests passed!** TOTAL ${TOTAL_TESTS} PASSED ${PASSED_TESTS} FAILED ${FAILED_TESTS}`
           fi
 
           # 4. Create the new entry for the release notes
