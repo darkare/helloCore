@@ -76,7 +76,7 @@ jobs:
             --reporter-cli-no-console \
             --color off | sed 's/\x1b\[[0-9;]*m//g' > postman-output.txt || true
 
-      - name: "� Attach test report to GitHub Release"
+      - name: "📎 Attach Report & Update Release Notes"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TZ: Australia/Sydney
@@ -87,19 +87,37 @@ jobs:
 
           # Check if a release exists for the tag
           if ! release_json=$(gh api repos/${{ github.repository }}/releases/tags/$TAG 2>/dev/null); then
-            echo "ℹ️ No release found for tag $TAG. Skipping report attachment."
+            echo "ℹ️ No release found for tag $TAG. Skipping report processing."
             exit 0
           fi
           
-          echo "✅ Release found for tag $TAG. Attaching test report."
+          echo "✅ Release found for tag $TAG. Processing test report."
           
-          # Upload the output file as a release asset
+          # 1. Upload the full output file as a release asset first
           gh release upload $TAG postman-output.txt --clobber
           
           release_id=$(echo "$release_json" | jq -r .id)
           current_body=$(echo "$release_json" | jq -r .body)
 
-          # Create a new entry that links to the attached report
+          # 2. Extract failure details from the output file
+          FAILURE_DETAILS=$(sed -n '/#  failure/,$p' postman-output.txt)
+
+          # 3. Conditionally format the summary based on whether failures were found
+          if [ -n "$FAILURE_DETAILS" ]; then
+            SUMMARY_BODY=$(cat <<EOF
+          **❌ Tests Failed!**
+
+          **Failure Details:**
+          \`\`\`
+          ${FAILURE_DETAILS}
+          \`\`\`
+          EOF
+          )
+          else
+            SUMMARY_BODY="**✅ All tests passed!**"
+          fi
+
+          # 4. Create the new entry for the release notes
           new_entry=$(cat <<EOF
 
           ---
@@ -109,6 +127,8 @@ jobs:
           - **Test Date:** ${NOW}
           - **Workflow Run:** [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           </small>
+
+          ${SUMMARY_BODY}
 
           **📄 View the full Postman test report:**
           - [postman-output.txt](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/postman-output.txt)
@@ -125,4 +145,4 @@ jobs:
             /repos/${{ github.repository }}/releases/$release_id \
             -f body="$updated_body"
 
-          echo "✅ Attached Postman test report to release $TAG."
+          echo "✅ Attached Postman test report and updated release notes for $TAG."
