@@ -58,8 +58,9 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: "Install Newman and reporters"
-        run: npm install -g newman newman-reporter-markdown
+      - name: "Install Postman CLI"
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
 
       # - name: "▶️ Run API Tests (mm-api-test)"
       #   run: |
@@ -70,10 +71,8 @@ jobs:
 
       - name: "▶️ Run Page Tests (mm-page-test)"
         run: |
-          newman run postman/mm-page-test.postman_collection.json \
-            --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
-            --reporters cli,markdown \
-            --reporter-markdown-export page-test-report.md
+          postman collection run postman/mm-page-test.postman_collection.json \
+            --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" > postman-output.txt || true
 
       - name: "📝 Append test reports to GitHub Release"
         env:
@@ -94,9 +93,8 @@ jobs:
           release_id=$(echo "$release_json" | jq -r .id)
           current_body=$(echo "$release_json" | jq -r .body)
 
-          # Combine the markdown reports into a single variable
-          API_REPORT=$(cat api-test-report.md)
-          PAGE_REPORT=$(cat page-test-report.md)
+          # Read the raw output from the Postman CLI run
+          POSTMAN_REPORT=$(cat postman-output.txt)
 
           # Create the new entry to be appended to the release notes
           new_entry=$(cat <<EOF
@@ -110,16 +108,11 @@ jobs:
           </small>
 
           <details>
-          <summary><strong>API Test Summary (mm-api-test)</strong></summary>
+          <summary><strong>Postman CLI Output (mm-page-test)</strong></summary>
 
-          ${API_REPORT}
-
-          </details>
-
-          <details>
-          <summary><strong>Page Load Test Summary (mm-page-test)</strong></summary>
-
-          ${PAGE_REPORT}
+          \`\`\`
+          ${POSTMAN_REPORT}
+          \`\`\`
 
           </details>
           EOF
