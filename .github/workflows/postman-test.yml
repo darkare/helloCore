@@ -93,8 +93,37 @@ jobs:
           release_id=$(echo "$release_json" | jq -r .id)
           current_body=$(echo "$release_json" | jq -r .body)
 
-          # Read the raw output from the Postman CLI run
-          POSTMAN_REPORT=$(cat postman-output.txt)
+          # Extract the summary table and failure details from the Postman output
+          SUMMARY_TABLE=$(sed -n '/┌──/,/└──/p' postman-output.txt)
+          FAILURE_DETAILS=$(sed -n '/#  failure/,$p' postman-output.txt)
+
+          # Conditionally format the report based on whether failures were found
+          if [ -n "$FAILURE_DETAILS" ]; then
+            POSTMAN_REPORT=$(cat <<EOF
+          **❌ Tests Failed!**
+
+          **Failure Details:**
+          \`\`\`
+          ${FAILURE_DETAILS}
+          \`\`\`
+
+          **Run Summary:**
+          \`\`\`
+          ${SUMMARY_TABLE}
+          \`\`\`
+          EOF
+          )
+          else
+            POSTMAN_REPORT=$(cat <<EOF
+          **✅ All tests passed!**
+
+          **Run Summary:**
+          \`\`\`
+          ${SUMMARY_TABLE}
+          \`\`\`
+          EOF
+          )
+          fi
 
           # Create the new entry to be appended to the release notes
           new_entry=$(cat <<EOF
@@ -108,11 +137,9 @@ jobs:
           </small>
 
           <details>
-          <summary><strong>Postman CLI Output (mm-page-test)</strong></summary>
+          <summary><strong>Postman Test Summary (mm-page-test)</strong></summary>
 
-          \`\`\`
           ${POSTMAN_REPORT}
-          \`\`\`
 
           </details>
           EOF
@@ -128,4 +155,4 @@ jobs:
             /repos/${{ github.repository }}/releases/$release_id \
             -f body="$updated_body"
 
-          echo "✅ Release $TAG updated with Postman test results."
+          echo "✅ Release $TAG updated with formatted Postman test results."
