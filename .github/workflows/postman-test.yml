@@ -61,20 +61,18 @@ jobs:
       - name: "Install Postman CLI"
         run: |
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
-
-      # - name: "▶️ Run API Tests (mm-api-test)"
-      #   run: |
-      #     newman run postman/mm-api-test.postman_collection.json \
-      #       --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
-      #       --reporters cli,markdown \
-      #       --reporter-markdown-export api-test-report.md
+          # Move postman to a directory in the PATH
+          sudo mv postman /usr/local/bin/postman
 
       - name: "▶️ Run Page Tests (mm-page-test)"
         run: |
-          postman collection run postman/mm-page-test.postman_collection.json \
+          # Run the postman command as specified.
+          # The command will fail if tests fail, so we add `|| true` to allow the workflow to continue to the reporting step.
+          # The CLI output is redirected to postman-output.txt for parsing.
+          postman collection run ./postman/mm-page-test.postman_collection.json \
             --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
-            --reporter-cli-no-console \
-            --color off | sed 's/\x1b\[[0-9;]*m//g' > postman-output.txt || true
+            --reporters cli,html --reporter-htmlextra-export mm-page-test-summary.html \
+            > postman-output.txt || true
 
       - name: "📎 Attach Report & Update Release Notes"
         env:
@@ -93,31 +91,37 @@ jobs:
           
           echo "✅ Release found for tag $TAG. Processing test report."
           
-          # 1. Upload the full output file as a release asset first
-          gh release upload $TAG postman-output.txt --clobber
+          # 1. Upload the HTML report as a release asset
+          if [ -f "mm-page-test-summary.html" ]; then
+            gh release upload $TAG mm-page-test-summary.html --clobber
+            UPLOAD_SUCCESS=true
+          else
+            echo "⚠️ HTML report not found. Uploading raw text log instead."
+            gh release upload $TAG postman-output.txt --clobber
+            UPLOAD_SUCCESS=false
+          fi
           
           release_id=$(echo "$release_json" | jq -r .id)
           current_body=$(echo "$release_json" | jq -r .body)
 
-          # 2. Extract failure details from the output file
-          FAILURE_DETAILS=$(sed -n '/#  failure/,$p' postman-output.txt)
+          # 2. Extract failure count from the CLI output in postman-output.txt
+          # This awk command finds the 'assertions' line and prints the last field (the failure count)
+          FAILURE_COUNT=$(awk '/assertions/ {print $NF}' postman-output.txt | tr -d '│' | xargs)
 
-          # 3. Conditionally format the summary based on whether failures were found
-          if [ -n "$FAILURE_DETAILS" ]; then
-            SUMMARY_BODY=$(cat <<EOF
-          **❌ Tests Failed!**
-
-          **Failure Details:**
-          \`\`\`
-          ${FAILURE_DETAILS}
-          \`\`\`
-          EOF
-          )
+          # 3. Conditionally format the summary based on the failure count
+          if [ -n "$FAILURE_COUNT" ] && [ "$FAILURE_COUNT" -gt 0 ]; then
+            SUMMARY_BODY="**❌ ${FAILURE_COUNT} assertion(s) failed!**"
           else
             SUMMARY_BODY="**✅ All tests passed!**"
           fi
 
-          # 4. Create the new entry for the release notes
+          # 4. Create the new entry for the release notes, linking to the correct report
+          if [ "$UPLOAD_SUCCESS" = true ]; then
+            REPORT_LINK_TEXT="**📄 View the full HTML test report:**\n- [mm-page-test-summary.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/mm-page-test-summary.html)"
+          else
+            REPORT_LINK_TEXT="**📄 View the full text log:**\n- [postman-output.txt](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/postman-output.txt)"
+          fi
+
           new_entry=$(cat <<EOF
 
           ---
@@ -130,8 +134,7 @@ jobs:
 
           ${SUMMARY_BODY}
 
-          **📄 View the full Postman test report:**
-          - [postman-output.txt](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/postman-output.txt)
+          ${REPORT_LINK_TEXT}
           EOF
           )
 
