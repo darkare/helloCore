@@ -75,7 +75,7 @@ jobs:
           # The command will fail if tests fail, so we add `|| true` to allow the workflow to continue to the reporting step.
           postman collection run postman/mm-page-test.postman_collection.json \
             --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
-            --reporters cli,html --reporter-htmlextra-export mm-page-test-report.html \
+            --reporters cli,html --reporter-html-export mm-page-test-report.html \
              | sed 's/\x1b\[[0-9;]*m//g' > postman-output.txt || true
 
       - name: "📎 Attach Report & Update Release Notes"
@@ -96,7 +96,7 @@ jobs:
           echo "✅ Release found for tag $TAG. Processing test report."
           
           # 1. Upload the HTML report as a release asset
-          gh release upload $TAG ./postman-cli-reports/mm-page-test-report.html --clobber
+          gh release upload $TAG ./mm-page-test-report.html --clobber
           
           release_id=$(echo "$release_json" | jq -r .id)
           current_body=$(echo "$release_json" | jq -r .body)
