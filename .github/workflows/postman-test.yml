@@ -62,13 +62,16 @@ jobs:
         run: |
           curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
 
-    #  - name: "▶️ Run API Tests (mm-api-test)"
-    #    run: |
+      - name: "▶️ Run API Tests (mm-api-test)"
+        run: |
+          postman collection run postman/mm-api-test.postman_collection.json \
+              --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
+              --reporters cli,html,json --reporter-html-export api-test-report.html \
+              --reporter-json-export api-test-report.json || true
           
 
       - name: "▶️ Run Page Tests (mm-page-test)"
         run: |
-          # Run postman, generating an html report and also piping the cli output to a text file for parsing.
           # The command will fail if tests fail, so we add `|| true` to allow the workflow to continue to the reporting step.
           postman collection run postman/mm-page-test.postman_collection.json \
             --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
@@ -90,39 +93,50 @@ jobs:
             exit 0
           fi
           
-          echo "✅ Release found for tag $TAG. Processing test report."
+          echo "✅ Release found for tag $TAG. Processing test reports."
           
-          # 1. Upload the HTML report as a release asset
+          # 1. Upload both HTML reports as release assets
           gh release upload $TAG ./mm-page-test-report.html --clobber
+          gh release upload $TAG ./api-test-report.html --clobber
           
           release_id=$(echo "$release_json" | jq -r .id)
           current_body=$(echo "$release_json" | jq -r .body)
 
-          # 2. Extract failure details and count failed assertions from the text output
-          echo "📄 Extracting values from JSON report..."
-          
+          # 2. Extract values from the mm-page-test JSON report
+          echo "📄 Extracting values from mm-page-test-report.json..."
           if [ -f mm-page-test-report.json ]; then
             MM_PAGES_TOTAL_TESTS=$(jq '.run.summary.tests.executed' mm-page-test-report.json)
             MM_PAGES_FAILED_TESTS=$(jq '.run.summary.tests.failed'   mm-page-test-report.json)
             MM_PAGES_PASSED_TESTS=$(jq '.run.summary.tests.passed'   mm-page-test-report.json)
           else
-            MM_PAGES_TOTAL_TESTS=0
-            MM_PAGES_FAILED_TESTS=0
-            MM_PAGES_PASSED_TESTS=0
+            MM_PAGES_TOTAL_TESTS=0; MM_PAGES_FAILED_TESTS=0; MM_PAGES_PASSED_TESTS=0
           fi
 
-          # 3. Conditionally format the summary based on the failure count
-          if [ -n "$MM_PAGES_FAILED_TESTS" ] && [ "$MM_PAGES_FAILED_TESTS" -gt 0 ]; then
-            SUMMARY_BODY=$(cat <<EOF
-          **❌ MM-PAGES ${MM_PAGES_FAILED_TESTS} test(s) failed!**
-
-          EOF
-          )
+          # 3. Extract values from the api-test JSON report
+          echo "📄 Extracting values from api-test-report.json..."
+          if [ -f api-test-report.json ]; then
+            MM_API_TOTAL_TESTS=$(jq '.run.summary.tests.executed' api-test-report.json)
+            MM_API_FAILED_TESTS=$(jq '.run.summary.tests.failed'   api-test-report.json)
+            MM_API_PASSED_TESTS=$(jq '.run.summary.tests.passed'   api-test-report.json)
           else
-            SUMMARY_BODY=`**✅ MM-PAGES All tests passed!** TOTAL ${MM_PAGES_TOTAL_TESTS} PASSED ${MM_PAGES_PASSED_TESTS} FAILED ${MM_PAGES_FAILED_TESTS}`
+            MM_API_TOTAL_TESTS=0; MM_API_FAILED_TESTS=0; MM_API_PASSED_TESTS=0
           fi
 
-          # 4. Create the new entry for the release notes
+          # 4. Conditionally format the summary for MM-PAGES
+          if [ -n "$MM_PAGES_FAILED_TESTS" ] && [ "$MM_PAGES_FAILED_TESTS" -gt 0 ]; then
+            SUMMARY_BODY_PAGES="**❌ MM-PAGES ${MM_PAGES_FAILED_TESTS} test(s) failed!**"
+          else
+            SUMMARY_BODY_PAGES="**✅ MM-PAGES All tests passed!** TOTAL ${MM_PAGES_TOTAL_TESTS} PASSED ${MM_PAGES_PASSED_TESTS} FAILED ${MM_PAGES_FAILED_TESTS}"
+          fi
+
+          # 5. Conditionally format the summary for MM-API
+          if [ -n "$MM_API_FAILED_TESTS" ] && [ "$MM_API_FAILED_TESTS" -gt 0 ]; then
+            SUMMARY_BODY_API="**❌ MM-API ${MM_API_FAILED_TESTS} test(s) failed!**"
+          else
+            SUMMARY_BODY_API="**✅ MM-API All tests passed!** TOTAL ${MM_API_TOTAL_TESTS} PASSED ${MM_API_PASSED_TESTS} FAILED ${MM_API_FAILED_TESTS}"
+          fi
+
+          # 6. Create the new entry for the release notes
           new_entry=$(cat <<EOF
 
           ---
@@ -133,10 +147,12 @@ jobs:
           - **Workflow Run:** [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           </small>
 
-          ${SUMMARY_BODY}
+          ${SUMMARY_BODY_PAGES}
+          ${SUMMARY_BODY_API}
 
-          **📄 View the full Postman test report:**
+          **📄 View the full Postman test reports:**
           - [mm-page-test-report.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/mm-page-test-report.html)
+          - [api-test-report.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/api-test-report.html)
           EOF
           )
 
@@ -150,4 +166,4 @@ jobs:
             /repos/${{ github.repository }}/releases/$release_id \
             -f body="$updated_body"
 
-          echo "✅ Attached Postman test report and updated release notes for $TAG."
+          echo "✅ Attached Postman test reports and updated release notes for $TAG."
