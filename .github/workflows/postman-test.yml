@@ -73,7 +73,8 @@ jobs:
         run: |
           postman collection run postman/mm-page-test.postman_collection.json \
             --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
-            --reporter-cli-no-console > postman-output.txt || true
+            --reporter-cli-no-console \
+            --color off > postman-output.txt || true
 
       - name: "📝 Append test reports to GitHub Release"
         env:
