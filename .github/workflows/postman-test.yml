@@ -124,16 +124,16 @@ jobs:
 
           # 4. Conditionally format the summary for MM-PAGES
           if [ -n "$MM_PAGES_FAILED_TESTS" ] && [ "$MM_PAGES_FAILED_TESTS" -gt 0 ]; then
-            SUMMARY_BODY_PAGES="**❌ MM-PAGES ${MM_PAGES_FAILED_TESTS} test(s) failed!**"
+            SUMMARY_BODY_PAGES="**❌ MM-PAGES test failed! : TOTAL ${MM_PAGES_TOTAL_TESTS} PASSED ${MM_PAGES_PASSED_TESTS} FAILED ${MM_PAGES_FAILED_TESTS}"
           else
-            SUMMARY_BODY_PAGES="**✅ MM-PAGES All tests passed!** TOTAL ${MM_PAGES_TOTAL_TESTS} PASSED ${MM_PAGES_PASSED_TESTS} FAILED ${MM_PAGES_FAILED_TESTS}"
+            SUMMARY_BODY_PAGES="**✅ MM-PAGES test passed! : TOTAL ${MM_PAGES_TOTAL_TESTS} PASSED ${MM_PAGES_PASSED_TESTS} FAILED ${MM_PAGES_FAILED_TESTS}"
           fi
 
           # 5. Conditionally format the summary for MM-API
           if [ -n "$MM_API_FAILED_TESTS" ] && [ "$MM_API_FAILED_TESTS" -gt 0 ]; then
-            SUMMARY_BODY_API="**❌ MM-API ${MM_API_FAILED_TESTS} test(s) failed!**"
+            SUMMARY_BODY_API="**❌ MM-API test failed!: TOTAL ${MM_API_TOTAL_TESTS} PASSED ${MM_API_PASSED_TESTS} FAILED ${MM_API_FAILED_TESTS}"
           else
-            SUMMARY_BODY_API="**✅ MM-API All tests passed!** TOTAL ${MM_API_TOTAL_TESTS} PASSED ${MM_API_PASSED_TESTS} FAILED ${MM_API_FAILED_TESTS}"
+            SUMMARY_BODY_API="**✅ MM-API test passed! : TOTAL ${MM_API_TOTAL_TESTS} PASSED ${MM_API_PASSED_TESTS} FAILED ${MM_API_FAILED_TESTS}"
           fi
 
           # 6. Create the new entry for the release notes
@@ -159,11 +159,12 @@ jobs:
           # Combine the existing release notes with the new entry
           updated_body="${current_body}${new_entry}"
 
-          # Use the GitHub API to update the release body
-          gh api \
+          # Use the GitHub API to update the release body by piping a JSON payload.
+          # This is more reliable for multi-line strings and special characters.
+          jq -n --arg body "$updated_body" '{body: $body}' | gh api \
             --method PATCH \
             -H "Accept: application/vnd.github.v3+json" \
             /repos/${{ github.repository }}/releases/$release_id \
-            -f body="$updated_body"
+            --input -
 
           echo "✅ Attached Postman test reports and updated release notes for $TAG."
