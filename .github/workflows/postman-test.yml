@@ -31,6 +31,10 @@ jobs:
           TAG=$(echo "$RUN_NAME" | sed 's/.*by tag //')
           echo "Extracted tag: $TAG"
           
+          # Generate DATE for filename suffix
+          DATE=$(date +"%Y%m%d_%H%M")
+          echo "Generated DATE: $DATE"
+          
           # Set the URL_DOMAIN based on the environment
           if [ "$ENV" = "uat" ]; then
             URL_DOMAIN="https://uat.mamamia.com.au"
@@ -46,6 +50,7 @@ jobs:
           echo "environment=$ENV" >> $GITHUB_OUTPUT
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "url_domain=$URL_DOMAIN" >> $GITHUB_OUTPUT
+          echo "date=$DATE" >> $GITHUB_OUTPUT
 
       - name: "Checkout code for tag: ${{ steps.get_data.outputs.tag }}"
         uses: actions/checkout@v4
@@ -66,8 +71,8 @@ jobs:
         run: |
           postman collection run postman/mm-api-test.postman_collection.json \
               --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
-              --reporters cli,html,json --reporter-html-export api-test-report.html \
-              --reporter-json-export api-test-report.json || true
+              --reporters cli,html,json --reporter-html-export ${{ steps.get_data.outputs.environment }}-api-test-report_${{ steps.get_data.outputs.date }}.html \
+              --reporter-json-export ${{ steps.get_data.outputs.environment }}-api-test-report_${{ steps.get_data.outputs.date }}.json || true
           
 
       - name: "▶️ Run Page Tests (mm-page-test)"
@@ -75,8 +80,8 @@ jobs:
           # The command will fail if tests fail, so we add `|| true` to allow the workflow to continue to the reporting step.
           postman collection run postman/mm-page-test.postman_collection.json \
             --env-var "URL_DOMAIN=${{ steps.get_data.outputs.url_domain }}" \
-            --reporters cli,html,json --reporter-html-export mm-page-test-report.html \
-            --reporter-json-export mm-page-test-report.json || true
+            --reporters cli,html,json --reporter-html-export ${{ steps.get_data.outputs.environment }}-mm-page-test-report_${{ steps.get_data.outputs.date }}.html \
+            --reporter-json-export ${{ steps.get_data.outputs.environment }}-mm-page-test-report_${{ steps.get_data.outputs.date }}.json || true
 
       - name: "📎 Attach Report & Update Release Notes"
         env:
@@ -85,6 +90,7 @@ jobs:
         run: |
           TAG=${{ steps.get_data.outputs.tag }}
           ENV=${{ steps.get_data.outputs.environment }}
+          DATE=${{ steps.get_data.outputs.date }}
           NOW=$(date +"%Y-%m-%d %H:%M:%S %Z")
 
           # Check if a release exists for the tag
@@ -95,29 +101,29 @@ jobs:
           
           echo "✅ Release found for tag $TAG. Processing test reports."
           
-          # 1. Upload both HTML reports as release assets
-          gh release upload $TAG ./mm-page-test-report.html --clobber
-          gh release upload $TAG ./api-test-report.html --clobber
+          # 1. Upload both HTML reports as release assets with new naming
+          gh release upload $TAG ./${ENV}-mm-page-test-report_${DATE}.html --clobber
+          gh release upload $TAG ./${ENV}-api-test-report_${DATE}.html --clobber
           
           release_id=$(echo "$release_json" | jq -r .id)
           current_body=$(echo "$release_json" | jq -r .body)
 
           # 2. Extract values from the mm-page-test JSON report
-          echo "📄 Extracting values from mm-page-test-report.json..."
-          if [ -f mm-page-test-report.json ]; then
-            MM_PAGES_TOTAL_TESTS=$(jq '.run.summary.tests.executed' mm-page-test-report.json)
-            MM_PAGES_FAILED_TESTS=$(jq '.run.summary.tests.failed'   mm-page-test-report.json)
-            MM_PAGES_PASSED_TESTS=$(jq '.run.summary.tests.passed'   mm-page-test-report.json)
+          echo "📄 Extracting values from ${ENV}-mm-page-test-report_${DATE}.json..."
+          if [ -f ${ENV}-mm-page-test-report_${DATE}.json ]; then
+            MM_PAGES_TOTAL_TESTS=$(jq '.run.summary.tests.executed' ${ENV}-mm-page-test-report_${DATE}.json)
+            MM_PAGES_FAILED_TESTS=$(jq '.run.summary.tests.failed'   ${ENV}-mm-page-test-report_${DATE}.json)
+            MM_PAGES_PASSED_TESTS=$(jq '.run.summary.tests.passed'   ${ENV}-mm-page-test-report_${DATE}.json)
           else
             MM_PAGES_TOTAL_TESTS=0; MM_PAGES_FAILED_TESTS=0; MM_PAGES_PASSED_TESTS=0
           fi
 
           # 3. Extract values from the api-test JSON report
-          echo "📄 Extracting values from api-test-report.json..."
-          if [ -f api-test-report.json ]; then
-            MM_API_TOTAL_TESTS=$(jq '.run.summary.tests.executed' api-test-report.json)
-            MM_API_FAILED_TESTS=$(jq '.run.summary.tests.failed'   api-test-report.json)
-            MM_API_PASSED_TESTS=$(jq '.run.summary.tests.passed'   api-test-report.json)
+          echo "📄 Extracting values from ${ENV}-api-test-report_${DATE}.json..."
+          if [ -f ${ENV}-api-test-report_${DATE}.json ]; then
+            MM_API_TOTAL_TESTS=$(jq '.run.summary.tests.executed' ${ENV}-api-test-report_${DATE}.json)
+            MM_API_FAILED_TESTS=$(jq '.run.summary.tests.failed'   ${ENV}-api-test-report_${DATE}.json)
+            MM_API_PASSED_TESTS=$(jq '.run.summary.tests.passed'   ${ENV}-api-test-report_${DATE}.json)
           else
             MM_API_TOTAL_TESTS=0; MM_API_FAILED_TESTS=0; MM_API_PASSED_TESTS=0
           fi
@@ -151,8 +157,8 @@ jobs:
           ${SUMMARY_BODY_API}
 
           **📄 View the full Postman test reports:**
-          - [mm-page-test-report.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/mm-page-test-report.html)
-          - [api-test-report.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/api-test-report.html)
+          - [${ENV}-mm-page-test-report_${DATE}.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/${ENV}-mm-page-test-report_${DATE}.html)
+          - [${ENV}-api-test-report_${DATE}.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/${ENV}-api-test-report_${DATE}.html)
           EOF
           )
 
@@ -168,3 +174,4 @@ jobs:
             --input -
 
           echo "✅ Attached Postman test reports and updated release notes for $TAG."
+          
