@@ -7,7 +7,26 @@ on:
       - completed
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.extract.outputs.environment }}
+      tag: ${{ steps.extract.outputs.tag }}
+      run_name: ${{ github.event.workflow_run.name }}
+    steps:
+      - name: Extract data from run name
+        id: extract
+        run: |
+          RUN_NAME="${{ github.event.workflow_run.name }}"
+          # Extract and uppercase the environment for the job title
+          ENV=$(echo "$RUN_NAME" | sed -n 's/.*\[\([^]]*\)\].*/\1/p' | tr '[:lower:]' '[:upper:]')
+          TAG=$(echo "$RUN_NAME" | sed 's/.*by tag //')
+          echo "environment=$ENV" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
   run-postman-tests:
+    name: "Run Postman Tests (${{ needs.prepare.outputs.environment }})"
+    needs: prepare
     # ✅ Only run this job if the triggering deployment workflow was successful.
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
@@ -18,9 +37,8 @@ jobs:
       - name: "📥 Get data from triggering workflow"
         id: get_data
         run: |
-          # The run name is "Deploy [environment] by tag tag_name"
-          # We parse this string to get the environment and tag for this test run.
-          RUN_NAME="${{ github.event.workflow_run.name }}"
+          # Data is passed from the 'prepare' job
+          RUN_NAME="${{ needs.prepare.outputs.run_name }}"
           echo "Parsing run name: $RUN_NAME"
           
           # Extract environment (e.g., 'uat' or 'prod')
@@ -28,7 +46,7 @@ jobs:
           echo "Extracted environment: $ENV"
           
           # Extract tag (e.g., 'v1.2.3')
-          TAG=$(echo "$RUN_NAME" | sed 's/.*by tag //')
+          TAG="${{ needs.prepare.outputs.tag }}"
           echo "Extracted tag: $TAG"
           
           # Set the URL_DOMAIN based on the environment
@@ -151,8 +169,8 @@ jobs:
           ${SUMMARY_BODY_API}
 
           **📄 View the full Postman test reports:**
-          - [mm-page-test-report.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/${{ steps.get_data.outputs.environment }}-mm-page-test-report.html)
-          - [api-test-report.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/${{ steps.get_data.outputs.environment }}-api-test-report.html)
+          - [${{ steps.get_data.outputs.environment }}-mm-page-test-report.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/${{ steps.get_data.outputs.environment }}-mm-page-test-report.html)
+          - [${{ steps.get_data.outputs.environment }}-api-test-report.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/${{ steps.get_data.outputs.environment }}-api-test-report.html)
           EOF
           )
 
