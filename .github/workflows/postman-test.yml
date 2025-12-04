@@ -96,8 +96,8 @@ jobs:
           echo "✅ Release found for tag $TAG. Processing test reports."
           
           # 1. Upload both HTML reports as release assets
-          gh release upload $TAG ./mm-page-test-report.html --clobber
-          gh release upload $TAG ./api-test-report.html --clobber
+          gh release upload $TAG ./${{ ENV }}-mm-page-test-report.html --clobber
+          gh release upload $TAG ./${{ ENV }}-api-test-report.html --clobber
           
           release_id=$(echo "$release_json" | jq -r .id)
           current_body=$(echo "$release_json" | jq -r .body)
