@@ -131,9 +131,8 @@ jobs:
           - **Workflow Run:** [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
           </small>
 
-          ${SUMMARY_BODY_PAGES}
-
-          ${SUMMARY_BODY_API}
+          - ${SUMMARY_BODY_PAGES}
+          - ${SUMMARY_BODY_API}
           EOF
           )
 
