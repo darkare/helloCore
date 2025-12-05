@@ -62,6 +62,7 @@ jobs:
           postman collection run postman/mm-api-test.postman_collection.json \
               --env-var URL_DOMAIN=${{ steps.get_data.outputs.url_domain }} \
               --reporters cli,html,json --reporter-html-export ${{ steps.get_data.outputs.environment }}-mm-api-test-report.html \
+              --reporter-json-omitAllHeadersAndBody \
               --reporter-json-export ${{ steps.get_data.outputs.environment }}-mm-api-test-report.json || true
           
       - name: "▶️ Run Page Tests (mm-page-test)"
@@ -69,6 +70,7 @@ jobs:
           postman collection run postman/mm-page-test.postman_collection.json \
             --env-var URL_DOMAIN=${{ steps.get_data.outputs.url_domain }} \
             --reporters cli,html,json --reporter-html-export ${{ steps.get_data.outputs.environment }}-mm-page-test-report.html \
+            --reporter-json-omitAllHeadersAndBody \
             --reporter-json-export ${{ steps.get_data.outputs.environment }}-mm-page-test-report.json || true
 
       - name: "Debug: List files in workspace"
