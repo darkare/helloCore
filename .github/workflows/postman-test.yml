@@ -71,6 +71,10 @@ jobs:
             --reporters cli,html,json --reporter-html-export ${{ steps.get_data.outputs.environment }}-mm-page-test-report.html \
             --reporter-json-export ${{ steps.get_data.outputs.environment }}-mm-page-test-report.json || true
 
+      - name: "Debug: List files in workspace"
+        run: |
+          ls -R
+
       - name: "📎 Attach Report & Update Release Notes"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
