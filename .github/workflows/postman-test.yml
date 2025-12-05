@@ -1,57 +1,52 @@
 name: Post-Deployment Tests
-# ✅ This workflow is triggered automatically after the 'Manual Deploy by Tag' workflow completes successfully.
+# ✅ This workflow is triggered by another workflow ('Manual Deploy by Tag') and receives inputs from it.
+run-name: "Post-Deployment Tests for ${{ github.event.inputs.environment }}"
+
 on:
-  workflow_run:
-    workflows: ["Manual Deploy by Tag"]
-    types:
-      - completed
+  # This allows the workflow to be triggered by the 'tag.yml' workflow.
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'The environment (e.g., uat, prod)'
+        required: true
+      tag:
+        description: 'The git tag being deployed'
+        required: true
+      head_sha:
+        description: 'The commit SHA to checkout'
+        required: true
 
 jobs:
   run-postman-tests:
-    # ✅ Only run this job if the triggering deployment workflow was successful.
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    name: Run Postman Tests
     runs-on: ubuntu-latest
+    # 🔐 Granting permissions for the job to read contents and write to releases.
     permissions:
-      contents: write # Required to checkout code and update release notes
-
+      contents: write
     steps:
-      - name: "📥 Get data from triggering workflow"
+      - name: "📥 Get data from inputs"
         id: get_data
         run: |
-          # The run name is "Deploy [environment] by tag tag_name"
-          # We parse this string to get the environment and tag for this test run.
-          RUN_NAME="${{ github.event.workflow_run.name }}"
-          echo "Parsing run name: $RUN_NAME"
+          ENV="${{ github.event.inputs.environment }}"
+          TAG="${{ github.event.inputs.tag }}"
           
-          # Extract environment (e.g., 'uat' or 'prod')
-          ENV=$(echo "$RUN_NAME" | sed -n 's/.*\[\([^]]*\)\].*/\1/p')
-          echo "Extracted environment: $ENV"
-          
-          # Extract tag (e.g., 'v1.2.3')
-          TAG=$(echo "$RUN_NAME" | sed 's/.*by tag //')
-          echo "Extracted tag: $TAG"
-          
-          # Set the URL_DOMAIN based on the environment
           if [ "$ENV" = "uat" ]; then
             URL_DOMAIN="https://uat.mamamia.com.au"
           elif [ "$ENV" = "prod" ]; then
             URL_DOMAIN="https://www.mamamia.com.au"
           else
-            echo "❌ Could not determine a valid environment from run name."
+            echo "❌ Could not determine a valid environment from input."
             exit 1
           fi
-          echo "Determined URL_DOMAIN: $URL_DOMAIN"
-
-          # Set outputs for subsequent steps
+          
           echo "environment=$ENV" >> $GITHUB_OUTPUT
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "url_domain=$URL_DOMAIN" >> $GITHUB_OUTPUT
 
-      - name: "Checkout code for tag: ${{ steps.get_data.outputs.tag }}"
+      - name: "Checkout code for tag: ${{ github.event.inputs.tag }}"
         uses: actions/checkout@v4
         with:
-          # Use the head_sha from the completed workflow run to ensure we test the exact code that was deployed.
-          ref: ${{ github.event.workflow_run.head_sha }}
+          ref: ${{ github.event.inputs.head_sha }}
 
       - name: "Setup Node.js"
         uses: actions/setup-node@v4
@@ -69,10 +64,8 @@ jobs:
               --reporters cli,html,json --reporter-html-export ${{ steps.get_data.outputs.environment }}-api-test-report.html \
               --reporter-json-export ${{ steps.get_data.outputs.environment }}-api-test-report.json || true
           
-
       - name: "▶️ Run Page Tests (mm-page-test)"
         run: |
-          # The command will fail if tests fail, so we add `|| true` to allow the workflow to continue to the reporting step.
           postman collection run postman/mm-page-test.postman_collection.json \
             --env-var URL_DOMAIN=${{ steps.get_data.outputs.url_domain }} \
             --reporters cli,html,json --reporter-html-export ${{ steps.get_data.outputs.environment }}-mm-page-test-report.html \
@@ -87,7 +80,6 @@ jobs:
           ENV=${{ steps.get_data.outputs.environment }}
           NOW=$(date +"%Y-%m-%d %H:%M:%S %Z")
 
-          # Check if a release exists for the tag
           if ! release_json=$(gh api repos/${{ github.repository }}/releases/tags/$TAG 2>/dev/null); then
             echo "ℹ️ No release found for tag $TAG. Skipping report processing."
             exit 0
@@ -95,15 +87,12 @@ jobs:
           
           echo "✅ Release found for tag $TAG. Processing test reports."
           
-          # 1. Upload both HTML reports as release assets
           gh release upload $TAG ./${{ steps.get_data.outputs.environment }}-mm-page-test-report.html --clobber
           gh release upload $TAG ./${{ steps.get_data.outputs.environment }}-api-test-report.html --clobber
           
           release_id=$(echo "$release_json" | jq -r .id)
           current_body=$(echo "$release_json" | jq -r .body)
 
-          # 2. Extract values from the ${{ steps.get_data.outputs.environment }}-mm-page-test JSON report
-          echo "📄 Extracting values from ${{ steps.get_data.outputs.environment }}-mm-page-test-report.json..."
           if [ -f ${{ steps.get_data.outputs.environment }}-mm-page-test-report.json ]; then
             MM_PAGES_TOTAL_TESTS=$(jq '.run.summary.tests.executed' ${{ steps.get_data.outputs.environment }}-mm-page-test-report.json)
             MM_PAGES_FAILED_TESTS=$(jq '.run.summary.tests.failed'   ${{ steps.get_data.outputs.environment }}-mm-page-test-report.json)
@@ -112,8 +101,6 @@ jobs:
             MM_PAGES_TOTAL_TESTS=0; MM_PAGES_FAILED_TESTS=0; MM_PAGES_PASSED_TESTS=0
           fi
 
-          # 3. Extract values from the ${{ steps.get_data.outputs.environment }}-api-test JSON report
-          echo "📄 Extracting values from ${{ steps.get_data.outputs.environment }}-api-test-report.json..."
           if [ -f ${{ steps.get_data.outputs.environment }}-api-test-report.json ]; then
             MM_API_TOTAL_TESTS=$(jq '.run.summary.tests.executed' ${{ steps.get_data.outputs.environment }}-api-test-report.json)
             MM_API_FAILED_TESTS=$(jq '.run.summary.tests.failed'   ${{ steps.get_data.outputs.environment }}-api-test-report.json)
@@ -122,21 +109,18 @@ jobs:
             MM_API_TOTAL_TESTS=0; MM_API_FAILED_TESTS=0; MM_API_PASSED_TESTS=0
           fi
 
-          # 4. Conditionally format the summary for MM-PAGES
           if [ -n "$MM_PAGES_FAILED_TESTS" ] && [ "$MM_PAGES_FAILED_TESTS" -gt 0 ]; then
             SUMMARY_BODY_PAGES="**❌ MM-PAGES test failed! : TOTAL ${MM_PAGES_TOTAL_TESTS} PASSED ${MM_PAGES_PASSED_TESTS} FAILED ${MM_PAGES_FAILED_TESTS}"
           else
             SUMMARY_BODY_PAGES="**✅ MM-PAGES test passed! : TOTAL ${MM_PAGES_TOTAL_TESTS} PASSED ${MM_PAGES_PASSED_TESTS} FAILED ${MM_PAGES_FAILED_TESTS}"
           fi
 
-          # 5. Conditionally format the summary for MM-API
           if [ -n "$MM_API_FAILED_TESTS" ] && [ "$MM_API_FAILED_TESTS" -gt 0 ]; then
             SUMMARY_BODY_API="**❌ MM-API test failed!: TOTAL ${MM_API_TOTAL_TESTS} PASSED ${MM_API_PASSED_TESTS} FAILED ${MM_API_FAILED_TESTS}"
           else
             SUMMARY_BODY_API="**✅ MM-API test passed! : TOTAL ${MM_API_TOTAL_TESTS} PASSED ${MM_API_PASSED_TESTS} FAILED ${MM_API_FAILED_TESTS}"
           fi
 
-          # 6. Create the new entry for the release notes
           new_entry=$(cat <<EOF
 
           ---
@@ -149,22 +133,17 @@ jobs:
 
           ${SUMMARY_BODY_PAGES}
           ${SUMMARY_BODY_API}
-
-          **📄 View the full Postman test reports:**
-          - [${{ steps.get_data.outputs.environment }}-mm-page-test-report.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/${{ steps.get_data.outputs.environment }}-mm-page-test-report.html)
-          - [${{ steps.get_data.outputs.environment }}-api-test-report.html](${{ github.server_url }}/${{ github.repository }}/releases/download/${TAG}/${{ steps.get_data.outputs.environment }}-api-test-report.html)
           EOF
           )
 
-          # Combine the existing release notes with the new entry
-          updated_body="${current_body}${new_entry}"
+          # Prepend the new entry to the current body
+          updated_body="${new_entry}${current_body}"
 
-          # Use the GitHub API to update the release body by piping a JSON payload.
-          # This is more reliable for multi-line strings and special characters.
-          jq -n --arg body "$updated_body" '{body: $body}' | gh api \
+          # Update the release notes
+          gh api \
             --method PATCH \
-            -H "Accept: application/vnd.github.v3+json" \
+            -H "Accept: application/vnd.github+json" \
             /repos/${{ github.repository }}/releases/$release_id \
-            --input -
+            -f body="$updated_body"
 
           echo "✅ Attached Postman test reports and updated release notes for $TAG."

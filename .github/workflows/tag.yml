@@ -46,3 +46,9 @@ jobs:
             echo "🚀 Deploying to PRODUCTION..."
             # your PROD deploy logic here
           fi
+
+      - name: Trigger Post-Deployment Tests
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: postman-test.yml
+          inputs: '{ "environment": "${{ github.event.inputs.environment }}", "tag": "${{ github.event.inputs.tag }}", "head_sha": "${{ github.sha }}" }'
