@@ -61,8 +61,8 @@ jobs:
         run: |
           postman collection run postman/mm-api-test.postman_collection.json \
               --env-var URL_DOMAIN=${{ steps.get_data.outputs.url_domain }} \
-              --reporters cli,html,json --reporter-html-export ${{ steps.get_data.outputs.environment }}-api-test-report.html \
-              --reporter-json-export ${{ steps.get_data.outputs.environment }}-api-test-report.json || true
+              --reporters cli,html,json --reporter-html-export ${{ steps.get_data.outputs.environment }}-mm-api-test-report.html \
+              --reporter-json-export ${{ steps.get_data.outputs.environment }}-mm-api-test-report.json || true
           
       - name: "▶️ Run Page Tests (mm-page-test)"
         run: |
@@ -88,7 +88,7 @@ jobs:
           echo "✅ Release found for tag $TAG. Processing test reports."
           
           gh release upload $TAG ./${{ steps.get_data.outputs.environment }}-mm-page-test-report.html --clobber
-          gh release upload $TAG ./${{ steps.get_data.outputs.environment }}-api-test-report.html --clobber
+          gh release upload $TAG ./${{ steps.get_data.outputs.environment }}-mm-api-test-report.html --clobber
           
           release_id=$(echo "$release_json" | jq -r .id)
           current_body=$(echo "$release_json" | jq -r .body)
@@ -101,10 +101,10 @@ jobs:
             MM_PAGES_TOTAL_TESTS=0; MM_PAGES_FAILED_TESTS=0; MM_PAGES_PASSED_TESTS=0
           fi
 
-          if [ -f ${{ steps.get_data.outputs.environment }}-api-test-report.json ]; then
-            MM_API_TOTAL_TESTS=$(jq '.run.summary.tests.executed' ${{ steps.get_data.outputs.environment }}-api-test-report.json)
-            MM_API_FAILED_TESTS=$(jq '.run.summary.tests.failed'   ${{ steps.get_data.outputs.environment }}-api-test-report.json)
-            MM_API_PASSED_TESTS=$(jq '.run.summary.tests.passed'   ${{ steps.get_data.outputs.environment }}-api-test-report.json)
+          if [ -f ${{ steps.get_data.outputs.environment }}-mm-api-test-report.json ]; then
+            MM_API_TOTAL_TESTS=$(jq '.run.summary.tests.executed' ${{ steps.get_data.outputs.environment }}-mm-api-test-report.json)
+            MM_API_FAILED_TESTS=$(jq '.run.summary.tests.failed'   ${{ steps.get_data.outputs.environment }}-mm-api-test-report.json)
+            MM_API_PASSED_TESTS=$(jq '.run.summary.tests.passed'   ${{ steps.get_data.outputs.environment }}-mm-api-test-report.json)
           else
             MM_API_TOTAL_TESTS=0; MM_API_FAILED_TESTS=0; MM_API_PASSED_TESTS=0
           fi
@@ -136,8 +136,8 @@ jobs:
           EOF
           )
 
-          # Prepend the new entry to the current body
-          updated_body="${new_entry}${current_body}"
+          # Append the new entry to the current body
+          updated_body="${current_body}${new_entry}"
 
           # Update the release notes
           gh api \
