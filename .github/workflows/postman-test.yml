@@ -1,6 +1,6 @@
 name: Post-Deployment Tests
 # ✅ This workflow is triggered by another workflow ('Manual Deploy by Tag') and receives inputs from it.
-run-name: "Post Deploy Tests [${{ github.event.inputs.environment }}] for [${{ github.event.inputs.tag }}]"
+run-name: "Post Deploy: Test [${{ github.event.inputs.environment }}] for tag [${{ github.event.inputs.tag }}]"
 
 on:
   # This allows the workflow to be triggered by the 'tag.yml' workflow.
